@@ -127,7 +127,7 @@ const OtherContractorInfo = () => {
         </div>
         <Header variant="h3" shade="dark" header="Videos" />
 
-        <div className="overflow-flex gap-4 w-full  no-scrollba">
+        <div className="overflow-flex gap-4 w-full  no-scrollbar">
           {dummyImgs.map((img, i) => (
             <div
               className="relative h-[120px] w-[250px] flex-shrink-0 rounded-md"

@@ -17,3 +17,26 @@ export const reverseGeocode = async (
     return null;
   }
 };
+
+export const getPlaceDetails = (
+  placeId: string
+): Promise<google.maps.places.PlaceResult> => {
+  return new Promise((resolve, reject) => {
+    const mapDiv = document.createElement("div");
+    const service = new google.maps.places.PlacesService(mapDiv);
+
+    service.getDetails(
+      {
+        placeId,
+        fields: ["address_components", "geometry", "formatted_address", "name"],
+      },
+      (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+          resolve(place);
+        } else {
+          reject("Failed to get place details");
+        }
+      }
+    );
+  });
+};

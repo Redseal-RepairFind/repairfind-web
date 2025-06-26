@@ -1,21 +1,52 @@
-// components/PlacesAutocomplete.tsx
 "use client";
 
-import { reverseGeocode } from "@/lib/helpers";
 import { Dispatch, useEffect, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
+
+export type PredictionsType = {
+  city: string;
+  region: string;
+  country: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+};
+
+const getPlaceDetails = (
+  placeId: string
+): Promise<google.maps.places.PlaceResult> => {
+  return new Promise((resolve, reject) => {
+    const mapDiv = document.createElement("div");
+    const service = new google.maps.places.PlacesService(mapDiv);
+
+    service.getDetails(
+      {
+        placeId,
+        fields: ["address_components", "formatted_address", "geometry", "name"],
+      },
+      (place, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+          resolve(place);
+        } else {
+          reject("Failed to get place details");
+        }
+      }
+    );
+  });
+};
 
 const PlacesAutocomplete = ({
   selectedPredictions,
   setSelectedPredictions,
 }: {
   selectedPredictions: {
-    prediction: { place_id: string; description: string } | null;
+    prediction: PredictionsType | null;
     openModal: boolean;
   };
   setSelectedPredictions: Dispatch<
     React.SetStateAction<{
-      prediction: { place_id: string; description: string } | null;
+      prediction: PredictionsType | null;
       openModal: boolean;
     }>
   >;
@@ -45,29 +76,6 @@ const PlacesAutocomplete = ({
     }
   }, [input]);
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        const address = await reverseGeocode(latitude, longitude);
-        if (address) {
-          setInput(address);
-          setSelectedPredictions((prev) => ({
-            ...prev,
-            prediction: {
-              description: address,
-              place_id: address.replaceAll(" ", "_"),
-            },
-          }));
-        }
-      },
-      (error) => {
-        console.warn("Geolocation error:", error);
-      },
-      { enableHighAccuracy: true }
-    );
-  }, [setSelectedPredictions]);
-
   return (
     <div className="space-y-2 relative">
       <button
@@ -81,12 +89,12 @@ const PlacesAutocomplete = ({
       >
         <p className="message-text">
           {selectedPredictions.prediction
-            ? selectedPredictions.prediction?.description
+            ? selectedPredictions.prediction.description
             : "Enter address"}
         </p>
-
         <BiChevronRight size={24} />
       </button>
+
       {selectedPredictions.openModal && (
         <div className="border border-mygray-200 shadow-2xl rounded p-2 max-h-[400px] overflow-y-auto flex flex-col gap-4 absolute left-0 right-0 bg-white z-50">
           <input
@@ -96,7 +104,7 @@ const PlacesAutocomplete = ({
             onChange={(e) => setInput(e.target.value)}
             className="p-2 w-full border border-mygray-400"
           />
-          <ul className="">
+          <ul>
             {predictions.map((prediction) => (
               <li
                 key={prediction.place_id}
@@ -104,8 +112,41 @@ const PlacesAutocomplete = ({
               >
                 <button
                   className="w-full h-full text-start text-sm"
-                  onClick={() => {
-                    setSelectedPredictions({ prediction, openModal: false });
+                  onClick={async () => {
+                    try {
+                      const details = await getPlaceDetails(
+                        prediction.place_id
+                      );
+
+                      const components = details.address_components || [];
+                      const getComp = (type: string) =>
+                        components.find((c) => c.types.includes(type))
+                          ?.long_name || "";
+
+                      const fullDetails: PredictionsType = {
+                        city:
+                          getComp("locality") ||
+                          getComp("administrative_area_level_2"),
+                        region: getComp("administrative_area_level_1"),
+                        country: getComp("country"),
+                        address:
+                          details.formatted_address || prediction.description,
+                        latitude: details.geometry?.location?.lat() || 0,
+                        longitude: details.geometry?.location?.lng() || 0,
+                        description: prediction.description,
+                      };
+
+                      // console.log("📍 Full Location Info:", fullDetails);
+
+                      setSelectedPredictions({
+                        prediction: fullDetails,
+                        openModal: false,
+                      });
+                      setInput(prediction.description);
+                      setPredictions([]);
+                    } catch (err) {
+                      console.error("Error fetching place details:", err);
+                    }
                   }}
                 >
                   {prediction.description}

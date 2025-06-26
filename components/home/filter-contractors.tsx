@@ -3,21 +3,21 @@
 import { useState } from "react";
 // import { GoogleMapsProvider } from "../ui/google-maps-provider";
 import Header from "../ui/header";
-import PlacesAutocomplete from "./places-autocomplete";
+import PlacesAutocomplete, { PredictionsType } from "./places-autocomplete";
 import FilterSkills from "./skills-select";
 import CustomBtn from "../ui/button";
 import { useRouter } from "next/navigation";
 
 const FilterSearch = () => {
   const [selectedPredictions, setSelectedPredictions] = useState<{
-    prediction: { place_id: string; description: string } | null;
+    prediction: PredictionsType | null;
     openModal: boolean;
   }>({
     prediction: null,
     openModal: false,
   });
   const [selectedSkills, setSelectedSkills] = useState<{
-    skill: { _id: string; name: string } | null;
+    skill: PredictionsType | null;
     openModal: boolean;
   }>({
     skill: null,
@@ -37,8 +37,8 @@ const FilterSearch = () => {
         />
 
         <FilterSkills
-          selectedSkill={selectedSkills}
-          setSelectedSkill={setSelectedSkills}
+          selectedSkill={selectedSkills as any}
+          setSelectedSkill={setSelectedSkills as any}
         />
         <PlacesAutocomplete
           selectedPredictions={selectedPredictions}

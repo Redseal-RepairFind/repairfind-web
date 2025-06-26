@@ -3,7 +3,9 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { ContractorProfile } from "./contractor-item";
 import FilterSkills from "../home/skills-select";
-import PlacesAutocomplete from "../home/places-autocomplete";
+import PlacesAutocomplete, {
+  PredictionsType,
+} from "../home/places-autocomplete";
 import DistanceSlider from "../ui/distance-select";
 import { sortBy } from "@/lib/constants";
 import Image, { StaticImageData } from "next/image";
@@ -13,12 +15,12 @@ import { BiSort } from "react-icons/bi";
 import BackBtn from "../ui/back-btn";
 
 type SkillsType = {
-  skill: { _id: string; name: string } | null;
+  skill: PredictionsType | null;
   openModal: boolean;
 };
 
 type Predictions = {
-  prediction: { place_id: string; description: string } | null;
+  prediction: PredictionsType | null;
   openModal: boolean;
 };
 
@@ -168,15 +170,15 @@ const FilterBy = ({
       <div className="column gap-2">
         <p className="text-sm ">Job category</p>
         <FilterSkills
-          selectedSkill={selectedSkills}
-          setSelectedSkill={setSelectedSkills}
+          selectedSkill={selectedSkills as any}
+          setSelectedSkill={setSelectedSkills as any}
         />
       </div>
       <div className="column gap-2">
         <p className="text-sm ">Job location</p>
         <PlacesAutocomplete
-          selectedPredictions={selectedPredictions}
-          setSelectedPredictions={setSelectedPredictions}
+          selectedPredictions={selectedPredictions as any}
+          setSelectedPredictions={setSelectedPredictions as any}
         />
       </div>
       <div className="column gap-2">
