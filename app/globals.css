@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+
+@theme {
+   
+  --font-jost: "Jost";
+
+
+  --color-myblue-400: rgb(66, 20, 247, 1);
+  --color-myblack-0: rgb(0, 0, 0, 1);
+  --color-mygray-400: rgba(123, 123, 123, 1);
+  --color-mygray-300: rgba(206, 206, 206, 1);
+  --color-mygray-200:rgba(232, 232, 232, 1);
+  --color-mygray-100:  rgba(248, 248, 248, 1);
+  --color-mygray-50:  rgba(244, 245, 246, 1);
+  --color-mygray-0: rgba(255, 255, 255, 1);
+ --color-bgImg:rgba(0, 0, 0, 0.8);
+--color-myYellow:  rgba(242, 234, 201, 1);
+
+
+  --blur-bg: backdrop-filter: blur(4px)
+  
+}
+
+/* Hide scrollbar for all elements with .no-scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+
+
+@layer utilities {
+  .flex-center {
+    @apply w-full flex items-center justify-center
+  }
+
+  .flex-space {
+    @apply flex items-center justify-between
+  }
+
+  .column {
+    @apply flex flex-col 
+  }
+
+
+  .btn-primary {
+    @apply py-2 px-5 bg-white border border-black rounded-[8px] cursor-pointer hover:bg-black hover:text-white duration-300 transition-all
+  }
+  .btn-secondary {
+    @apply py-2 px-5 bg-black text-white rounded-[8px] cursor-pointer hover:bg-mygray-400 hover:border hover:text-black duration-300 transition-all
+  }
+
+  .grid-3 {
+    @apply grid md:grid-cols-2 lg:grid-cols-3 gap-4 xl:grid-cols-4
+  }
+  .grid-3-img {
+    @apply grid grid-cols-2 lg:grid-cols-3 gap-4 xl:grid-cols-4
+  }
+ .overflow-flex {
+  @apply flex flex-nowrap items-center gap-x-4 overflow-x-auto;
+}
+
+
+  .message-text {
+    @apply text-sm text-[#7B7B7B] font-jost
+  }
+
+  .vertical-space { 
+    @apply px-4 lg:px-6 xl:px-8
+  }
+
+  .white-bg {
+    @apply bg-white  rounded-xl w-[90%]  md:w-[80%] shadow-lg border border-[#cecece] p-4
+  }
+  .white-bg-0 {
+    @apply bg-white  rounded-lg w-full shadow-sm border border-[#cecece] md:p-4 p-2
+  }
+
+  .input {
+    @apply rounded-[14px] bg-mygray-100 p-2 w-full focus:outline-none
+  }
+
+  .input-text {
+    @apply text-sm 
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-jost), sans-serif;
+  
+}
+
+
+.horizontal-slider {
+  height: 2px;
+  background: #d1d5db; /* gray-300 */
+  border-radius: 2px;
+  position: relative;
+}
+
+.track {
+  background: rgba(232, 232, 232, 1); /* emerald-500 */
+  height: 100%;
+}
+
+.thumb {
+  height: 16px;
+  width: 16px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  cursor: grab;
+  margin-top: -6px;
+  position: absolute;
+  z-index: 10;
+  cursor: pointer;
+
+  transition: box-shadow 0.2s;
+}
