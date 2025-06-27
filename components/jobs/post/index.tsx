@@ -222,6 +222,8 @@ const PostJobForm = () => {
         const blob = new Blob(chunks, { type: "audio/webm" });
         setAudioBlob(blob);
         const url = URL.createObjectURL(blob);
+
+        console.log(url);
         setAudioUrl(url);
       };
 
@@ -244,7 +246,7 @@ const PostJobForm = () => {
     setIsRecording(false);
   };
 
-  // console.log(publicUrl);
+  console.log(audioUrl);
 
   const submitForm = async (data: any) => {
     if (!data.description) {
@@ -301,9 +303,9 @@ const PostJobForm = () => {
 
       {/* Your content here */}
       <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8">
-        <div className="w-[90%] md:w-[80%] flex justify-start">
+        {/* <div className="w-[90%] md:w-[80%] flex justify-start">
           <BackBtn name="Go back" />
-        </div>
+        </div> */}
         <div className="white-bg h-full column gap-5 md:gap-10 text-input">
           <div className="column gap-2">
             <p>Job category</p>
@@ -490,10 +492,8 @@ const PostJobForm = () => {
             </div>
             <p className="message-text">
               Disclaimer: Visuals may not fully capture job details, so onsite
-              evaluations are recommended by accuracy. Contractors may charge
-              $100 site visit fee, which will be credited if estimate is
-              accepted. Proceed if you agree by clicking the box. Leave
-              unchecked if you decline
+              evaluations are recommended by accuracy. Proceed if you agree by
+              clicking the box. Leave unchecked if you decline
             </p>
           </div>
         </div>
