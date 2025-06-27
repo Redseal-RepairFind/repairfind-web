@@ -1,15 +1,9 @@
 import ContractorItem from "@/components/contractors/contractor-item";
 
-const SingleContractor = async ({
-  params,
-}: {
-  params: {
-    contractorId: string;
-  };
-}) => {
-  const { contractorId } = await params;
+const SingleContractor = async () => {
+  // const { contractorId } = await params;
 
-  console.log(contractorId);
+  // console.log(contractorId);
   return <ContractorItem />;
 };
 
