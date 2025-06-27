@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ReactSlider from "react-slider";
+// import ReactSlider from "react-slider";
 
 const DistanceSlider = ({
   min = 0,
@@ -23,7 +23,7 @@ const DistanceSlider = ({
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <ReactSlider
+      {/* <ReactSlider
         className="horizontal-slider"
         thumbClassName="thumb shadow-lg"
         trackClassName="track"
@@ -36,7 +36,7 @@ const DistanceSlider = ({
         ariaLabel={["Lower thumb", "Upper thumb"]}
         pearling
         minDistance={5}
-      />
+      /> */}
       <div className="flex justify-between text-sm mt-2 text-gray-600">
         <span>{value[0]} km</span>
         <span>{value[1]} km</span>
