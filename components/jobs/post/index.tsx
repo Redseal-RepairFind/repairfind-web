@@ -219,7 +219,7 @@ const PostJobForm = () => {
 
       mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/webm" });
+        const blob = new Blob(chunks, { type: "audio/mp4" });
         setAudioBlob(blob);
         const url = URL.createObjectURL(blob);
 
@@ -246,7 +246,7 @@ const PostJobForm = () => {
     setIsRecording(false);
   };
 
-  console.log(audioUrl);
+  // console.log(audioUrl);
 
   const submitForm = async (data: any) => {
     if (!data.description) {
