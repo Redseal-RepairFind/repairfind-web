@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-// import ReactSlider from "react-slider";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 const DistanceSlider = ({
   min = 0,
@@ -16,28 +17,30 @@ const DistanceSlider = ({
 }) => {
   const [value, setValue] = useState<[number, number]>([min, max]);
 
-  const handleChange = (val: [number, number]) => {
-    setValue(val);
-    onChange?.(val);
+  const handleChange = (val: number | number[]) => {
+    if (Array.isArray(val)) {
+      setValue([val[0], val[1]]);
+      onChange?.([val[0], val[1]]);
+    }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      {/* <ReactSlider
-        className="horizontal-slider"
-        thumbClassName="thumb shadow-lg"
-        trackClassName="track"
-        defaultValue={[min, max]}
+    <div className="w-full max-w-[300px] mx-auto space-y-2">
+      <Slider
+        range
         min={min}
         max={max}
         step={step}
         value={value}
         onChange={handleChange}
-        ariaLabel={["Lower thumb", "Upper thumb"]}
-        pearling
-        minDistance={5}
-      /> */}
-      <div className="flex justify-between text-sm mt-2 text-gray-600">
+        allowCross={false}
+        trackStyle={[{ backgroundColor: "#707577" }]}
+        handleStyle={[
+          { borderColor: "#303446", backgroundColor: "#303446" },
+          { borderColor: "#303446", backgroundColor: "#303446" },
+        ]}
+      />
+      <div className="flex justify-between text-sm text-gray-600">
         <span>{value[0]} km</span>
         <span>{value[1]} km</span>
       </div>

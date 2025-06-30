@@ -30,6 +30,7 @@ type FileUploadType = {
   key: string;
   url: string;
   publicUrl: string;
+  fileType: string; // ✅ this is now added properly
 };
 
 const PostJobForm = () => {
@@ -110,6 +111,7 @@ const PostJobForm = () => {
         );
       }
 
+      // Upload to signed URLs
       await Promise.all(
         validFiles.map((file, i) =>
           axios.put(uploadedFiles.urls![i].url, file, {
@@ -120,10 +122,15 @@ const PostJobForm = () => {
         )
       );
 
-      // 3. Update state with uploaded file info
+      // Merge file metadata with uploaded file URL
+      const uploadedWithType = uploadedFiles.urls.map((urlObj, index) => ({
+        ...urlObj,
+        fileType: validFiles[index].type,
+      }));
+
       setFile((prev) => ({
         ...prev,
-        files: [...(prev.files || []), ...uploadedFiles.urls],
+        files: [...(prev.files || []), ...uploadedWithType],
       }));
 
       toast.remove();
@@ -272,10 +279,18 @@ const PostJobForm = () => {
 
         setPublicUrl(url as string);
       }
+
+      const { description, ...rest } = selectedPredictions.prediction;
+
+      const locData = {
+        ...rest,
+        description: data?.unit || description,
+      };
+      // console.log(locData);
       const formData = {
         ...data,
         category: selectedSkills.skill?.name,
-        location: selectedPredictions.prediction,
+        location: locData,
         ...(publicUrl && {
           voiceDescription: {
             url: publicUrl,
@@ -291,6 +306,8 @@ const PostJobForm = () => {
       console.error(error);
     }
   };
+
+  console.log(file.files);
 
   const router = useRouter();
   return (
@@ -314,6 +331,7 @@ const PostJobForm = () => {
               setSelectedSkill={setSelectedSkills as any}
             />
           </div>
+
           <div className="column gap-2">
             <p>Job description</p>
             <textarea
@@ -337,6 +355,20 @@ const PostJobForm = () => {
               selectedPredictions={selectedPredictions}
               setSelectedPredictions={setSelectedPredictions}
             />
+          </div>
+          <div className="column gap-2">
+            <p>Unit number / suite (optional)</p>
+            <textarea
+              placeholder="Unit number / suite"
+              rows={3}
+              cols={3}
+              className="input w-full p-4"
+              {...register("unit")}
+            />
+
+            <p className="text-red-600">
+              {errors?.description?.message?.toString() as string}
+            </p>
           </div>
           <div className="column gap-2">
             <p>Voice description(optional)</p>
@@ -437,7 +469,7 @@ const PostJobForm = () => {
                   </button>
                 </div>
               )}
-              {file.loading ? (
+              {file.loading && !file?.files?.length ? (
                 <LoadingTemplate isMessage={false} />
               ) : file.files?.length ? (
                 <div className="overflow-flex gap-4 w-full mt-4 no-scrollbar">
@@ -456,13 +488,21 @@ const PostJobForm = () => {
                       >
                         <TbTrashFilled color="#fff" />
                       </button>
-                      <Image
-                        src={file.publicUrl}
-                        alt="Upload img"
-                        fill
-                        className="object-cover rounded-lg"
-                        priority
-                      />
+                      {file.fileType.startsWith("video/") ? (
+                        <video
+                          controls
+                          className="object-cover rounded-lg"
+                          src={file.publicUrl}
+                        />
+                      ) : (
+                        <Image
+                          src={file.publicUrl}
+                          alt="Upload img"
+                          fill
+                          className="object-cover rounded-lg"
+                          priority
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

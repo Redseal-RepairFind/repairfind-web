@@ -39,21 +39,25 @@ export const sortBy = [
     name: "Closest to you",
     icon: locationIcon,
     id: 1,
+    value: "distance",
   },
   {
     name: "Ratings",
     icon: starIcon,
     id: 2,
+    value: "rating",
   },
   {
     name: "Response time",
     icon: responseIcon,
     id: 3,
+    value: "avgResponseTime",
   },
   {
     name: "Most popular",
     icon: popularIcon,
     id: 5,
+    value: "popular",
   },
 ];
 export const sideBar = [

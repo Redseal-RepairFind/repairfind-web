@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ContractorProfile } from "./contractor-item";
 import FilterSkills from "../home/skills-select";
 import PlacesAutocomplete, {
@@ -14,8 +14,15 @@ import { FiFilter } from "react-icons/fi";
 import { BiSort } from "react-icons/bi";
 import BackBtn from "../ui/back-btn";
 
+import emptyVid from "@/public/images/no-cont.gif";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { reverseGeocodeAddress } from "@/lib/helpers";
+import { ContractorsType } from "@/lib/apis/contractor";
+import { useContractors } from "@/lib/hooks/useContractors";
+import LoadingTemplate from "../ui/spinner";
+
 type SkillsType = {
-  skill: PredictionsType | null;
+  skill: any | null;
   openModal: boolean;
 };
 
@@ -25,8 +32,100 @@ type Predictions = {
 };
 
 const ContractorsList = () => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+  const category = searchParams?.get("category") || undefined;
+  const minResponseTime = searchParams?.get("minResponseTime")
+    ? Number(searchParams.get("minResponseTime"))
+    : undefined;
+  const maxDistance = searchParams?.get("maxDistance")
+    ? Number(searchParams.get("maxDistance"))
+    : undefined;
+
+  const address = searchParams?.get("address") || undefined;
+  const latitude = searchParams?.get("latitude")
+    ? Number(searchParams.get("latitude"))
+    : undefined;
+  const longitude = searchParams?.get("longitude")
+    ? Number(searchParams.get("longitude"))
+    : undefined;
+  const maxResponseTime = searchParams?.get("maxResponseTime")
+    ? Number(searchParams.get("maxResponseTime"))
+    : undefined;
+
+  const minDistance = searchParams?.get("minDistance")
+    ? Number(searchParams.get("minDistance"))
+    : undefined;
+  const experienceYear = searchParams?.get("experienceYear")
+    ? Number(searchParams.get("experienceYear"))
+    : undefined;
+
+  const page = searchParams?.get("page") ? Number(searchParams.get("page")) : 1;
+  const limit = searchParams?.get("limit")
+    ? Number(searchParams.get("limit"))
+    : 20;
+
+  const sort = searchParams?.get("sort") as "rating" | "-rating" | undefined;
+  const searchName = searchParams?.get("searchName") || undefined;
+  const country = searchParams?.get("country") || undefined;
+  const city = searchParams?.get("city") || undefined;
+
+  const availableDays = searchParams?.get("availableDays") as
+    | "Monday"
+    | "Tuesday"
+    | "Wednesday"
+    | "Thursday"
+    | "Friday"
+    | "Saturday"
+    | "Sunday"
+    | undefined;
+
+  const isOffDuty =
+    searchParams?.get("isOffDuty") === "true"
+      ? true
+      : searchParams?.get("isOffDuty") === "false"
+      ? false
+      : undefined;
+
+  const date = searchParams?.get("date") || undefined;
+  const accountType = searchParams?.get("accountType") || undefined;
+  const emergencyJobs =
+    searchParams?.get("emergencyJobs") === "true"
+      ? true
+      : searchParams?.get("emergencyJobs") === "false"
+      ? false
+      : undefined;
+  const listing = searchParams?.get("listing") || undefined;
+
+  useEffect(() => {
+    const lat = Number(latitude);
+    const lng = Number(longitude);
+
+    console.log(lat, lng);
+
+    if (lat && lng)
+      reverseGeocodeAddress(lat, lng)
+        .then((location) => {
+          if (location) {
+            setSelectedPredictions((prev) => ({
+              ...prev,
+              prediction: location,
+            }));
+          }
+        })
+        .catch(console.error);
+  }, [latitude, longitude]);
+
   const [selectedSkills, setSelectedSkills] = useState<SkillsType>({
-    skill: null,
+    skill: category
+      ? {
+          _id: "jdjd",
+          name: category,
+        }
+      : null,
     openModal: false,
   });
 
@@ -40,14 +139,83 @@ const ContractorsList = () => {
         name: string;
         icon: StaticImageData;
         id: number;
+        value: string;
       }
     | undefined
   >(undefined);
-  const [distance, setDistance] = useState([0, 0]);
-
-  const [toggle, setToggle] = useState(false);
+  const [distance, setDistance] = useState([
+    Number(minDistance),
+    Number(maxDistance),
+  ]);
+  const [toggle, setToggle] = useState(emergencyJobs);
   const [open, setOpen] = useState(false);
-  // console.log(distance);
+
+  const { contractorsData, isLoadingContravtors } = useContractors();
+
+  const data = contractorsData?.data?.data;
+
+  // console.log(contractors);
+
+  const handleReset = () => {
+    setDistance([0, 0]);
+    setSelectedPredictions({
+      openModal: false,
+      prediction: null,
+    });
+    setToggle(undefined);
+
+    setSelectedSkills({
+      openModal: false,
+      skill: null,
+    });
+
+    setSortProps(undefined);
+
+    if (open) {
+      setOpen(false);
+    }
+  };
+
+  const handleFilter = () => {
+    const params = new URLSearchParams();
+
+    // Add filters to query
+    if (selectedSkills.skill) params.set("category", selectedSkills.skill.name);
+    if (selectedPredictions.prediction) {
+      params.set(
+        "latitude",
+        selectedPredictions.prediction.latitude.toString()
+      );
+      params.set(
+        "longitude",
+        selectedPredictions.prediction.longitude.toString()
+      );
+    }
+
+    if (distance[0]) params.set("minDistance", distance[0].toString());
+    if (distance[1]) params.set("maxDistance", distance[1].toString());
+
+    if (toggle) params.set("emergencyJobs", "true");
+    if (sortProps) params.set("sort", sortProps.value);
+
+    // Always keep pagination reasonable
+    params.set("limit", "20");
+    params.set("page", "1");
+
+    // Update the URL — this triggers the useEffect that refetches
+    router.push(`${pathname}?${params.toString()}`);
+
+    if (open) {
+      setOpen(false);
+    }
+  };
+
+  if (isLoadingContravtors)
+    return (
+      // <div className="w-full h-screen relative">
+      <LoadingTemplate />
+      // {/* </div> */}
+    );
 
   return (
     <div className="vertical-space pt-4">
@@ -64,7 +232,7 @@ const ContractorsList = () => {
 
       <div className="grid  md:[grid-template-columns:260px_1fr] lg::[grid-template-columns:400px_1fr] gap-5 mt-5 ">
         <Modal isOpen={open} onClose={() => setOpen(false)}>
-          <div className="max-h-[400px] column gap-4 overflow-y-auto">
+          <div className="max-h-[400px] column gap-4 overflow-y-auto no-scrollbar">
             <FilterBy
               selectedPredictions={selectedPredictions}
               selectedSkills={selectedSkills}
@@ -73,12 +241,18 @@ const ContractorsList = () => {
               setSelectedSkills={setSelectedSkills}
               setToggle={setToggle}
               toggle={toggle}
+              modal
             />
             <SortBy selected={sortProps} onSelect={setSortProps} />
 
             <div className="flex flex-col gap-4">
-              <button className="btn-secondary">Apply</button>
-              <button className="btn-primary">clear</button>
+              <button className="btn-secondary" onClick={handleFilter}>
+                Apply
+              </button>
+
+              <button className="btn-primary" onClick={handleReset}>
+                clear
+              </button>
             </div>
           </div>
         </Modal>
@@ -95,18 +269,40 @@ const ContractorsList = () => {
           />
           <SortBy selected={sortProps} onSelect={setSortProps} />
           <div className="flex flex-col gap-4">
-            <button className="btn-secondary">Apply</button>
-            <button className="btn-primary">clear</button>
+            <button className="btn-secondary" onClick={handleFilter}>
+              Apply
+            </button>
+
+            <button className="btn-primary" onClick={handleReset}>
+              clear
+            </button>
           </div>
         </div>
 
         <div className="white-bg-0 w-full">
-          <ContractorProfile />
-          <ContractorProfile />
-          <ContractorProfile />
-          <ContractorProfile />
-          <ContractorProfile />
-          <ContractorProfile />
+          {data?.length > 0 ? (
+            data?.map((cont: any) => (
+              <ContractorProfile data={cont} key={cont?._id} />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-2  h-full">
+              {/* <video width="600" autoPlay muted loop>
+                <source src={"/images/no-cont.gif"} type="video/mp4" />
+              </video> */}
+
+              <div className="w-[300px] h-[300px] relative">
+                <Image
+                  src="/images/no-cont.gif"
+                  alt="No contractors"
+                  className=""
+                  fill
+                />
+              </div>
+              <h2 className="font-bold">
+                No contractors matches your search description
+              </h2>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -120,10 +316,11 @@ export const ToggleElement = ({
   setIsToggled,
   grayBg,
 }: {
-  isToggled: boolean;
-  setIsToggled: Dispatch<SetStateAction<boolean>>;
+  isToggled: boolean | undefined;
+  setIsToggled: Dispatch<SetStateAction<boolean | undefined>>;
   grayBg?: boolean;
 }) => {
+  // console.log(isToggled);
   return (
     <button
       className="relative h-3 w-8 rounded-full cursor-pointer  bg-mygray-200"
@@ -132,7 +329,7 @@ export const ToggleElement = ({
       <div
         className={`w-4 h-4 rounded-full ${
           grayBg ? "bg-mygray-400" : "bg-mygray-0"
-        } absolute bottom-[-2px] shadow-md ${isToggled ? "left-0" : "right-0"}`}
+        } absolute bottom-[-2px] shadow-md ${isToggled ? "right-0" : "left-0"}`}
       />
     </button>
   );
@@ -146,6 +343,7 @@ const FilterBy = ({
   setSelectedSkills,
   toggle,
   setToggle,
+  modal,
 }: {
   distance?: number[];
   setDistance: Dispatch<SetStateAction<number[]>>;
@@ -153,8 +351,9 @@ const FilterBy = ({
   setSelectedSkills: Dispatch<SetStateAction<SkillsType>>;
   selectedPredictions: Predictions;
   setSelectedPredictions: Dispatch<SetStateAction<Predictions>>;
-  toggle: boolean;
-  setToggle: Dispatch<SetStateAction<boolean>>;
+  toggle: boolean | undefined;
+  setToggle: Dispatch<SetStateAction<boolean | undefined>>;
+  modal?: boolean;
 }) => {
   return (
     <div className="column gap-4">
@@ -172,6 +371,7 @@ const FilterBy = ({
         <FilterSkills
           selectedSkill={selectedSkills as any}
           setSelectedSkill={setSelectedSkills as any}
+          modal={modal as boolean}
         />
       </div>
       <div className="column gap-2">
@@ -179,6 +379,7 @@ const FilterBy = ({
         <PlacesAutocomplete
           selectedPredictions={selectedPredictions as any}
           setSelectedPredictions={setSelectedPredictions as any}
+          modal={modal}
         />
       </div>
       <div className="column gap-2">
@@ -198,9 +399,15 @@ const SortBy = ({
         name: string;
         icon: StaticImageData;
         id: number;
+        value: string;
       }
     | undefined;
-  onSelect: (sort: { name: string; icon: StaticImageData; id: number }) => void;
+  onSelect: (sort: {
+    name: string;
+    icon: StaticImageData;
+    id: number;
+    value: string;
+  }) => void;
 }) => {
   return (
     <div className="column gap-3">

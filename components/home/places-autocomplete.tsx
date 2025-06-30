@@ -39,6 +39,7 @@ const getPlaceDetails = (
 const PlacesAutocomplete = ({
   selectedPredictions,
   setSelectedPredictions,
+  modal,
 }: {
   selectedPredictions: {
     prediction: PredictionsType | null;
@@ -50,14 +51,81 @@ const PlacesAutocomplete = ({
       openModal: boolean;
     }>
   >;
+
+  modal?: boolean;
 }) => {
   const [input, setInput] = useState("");
   const [predictions, setPredictions] = useState<
     { place_id: string; description: string }[]
   >([]);
 
+  console.log(modal);
+
   const autocompleteServiceRef =
     useRef<google.maps.places.AutocompleteService | null>(null);
+
+  const containerRef = useRef<any>(null);
+  useEffect(() => {
+    if (!selectedPredictions.prediction && input === "") {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const geocoder = new google.maps.Geocoder();
+            const results = await new Promise<google.maps.GeocoderResult[]>(
+              (resolve, reject) => {
+                geocoder.geocode(
+                  { location: { lat: latitude, lng: longitude } },
+                  (res, status) => {
+                    if (status === "OK" && res) {
+                      resolve(res);
+                    } else {
+                      reject("Failed to reverse geocode location");
+                    }
+                  }
+                );
+              }
+            );
+            const currentAddress = results[0]?.formatted_address;
+            if (currentAddress) {
+              // console.log(results[0]);
+              setInput(currentAddress);
+            }
+          } catch (err) {
+            console.error("Error getting current address:", err);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+  }, [selectedPredictions.prediction]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setSelectedPredictions((prev) => ({
+          ...prev,
+          openModal: false,
+        }));
+      }
+    }
+
+    if (selectedPredictions.openModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    // Clean up
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectedPredictions.openModal]);
 
   useEffect(() => {
     if (!autocompleteServiceRef.current && window.google) {
@@ -77,7 +145,7 @@ const PlacesAutocomplete = ({
   }, [input]);
 
   return (
-    <div className="space-y-2 relative">
+    <div className="space-y-2 relative" ref={modal ? containerRef : null}>
       <button
         className="input flex items-center justify-between cursor-pointer z-50"
         onClick={() =>
@@ -96,12 +164,18 @@ const PlacesAutocomplete = ({
       </button>
 
       {selectedPredictions.openModal && (
-        <div className="border border-mygray-200 shadow-2xl rounded p-2 max-h-[400px] overflow-y-auto flex flex-col gap-4 absolute left-0 right-0 bg-white z-50">
+        <div
+          className="border border-mygray-200 shadow-2xl rounded p-2 max-h-[400px] overflow-y-auto flex flex-col gap-4 absolute left-0 right-0 bg-white z-50"
+          onClick={(e) => e.stopPropagation()} // 🛑 Prevent modal from closing
+        >
           <input
             type="text"
             placeholder="Enter address"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              e.stopPropagation();
+            }}
             className="p-2 w-full border border-mygray-400"
           />
           <ul>
@@ -112,12 +186,12 @@ const PlacesAutocomplete = ({
               >
                 <button
                   className="w-full h-full text-start text-sm"
-                  onClick={async () => {
+                  onClick={async (e) => {
+                    e.stopPropagation();
                     try {
                       const details = await getPlaceDetails(
                         prediction.place_id
                       );
-
                       const components = details.address_components || [];
                       const getComp = (type: string) =>
                         components.find((c) => c.types.includes(type))
@@ -135,9 +209,6 @@ const PlacesAutocomplete = ({
                         longitude: details.geometry?.location?.lng() || 0,
                         description: prediction.description,
                       };
-
-                      // console.log("📍 Full Location Info:", fullDetails);
-
                       setSelectedPredictions({
                         prediction: fullDetails,
                         openModal: false,

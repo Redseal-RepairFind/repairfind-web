@@ -21,7 +21,8 @@ const PersonalDetails = () => {
       const jobDetails = sessionStorage.getItem("formData");
       const ParsedDetails = JSON.parse(jobDetails as string);
 
-      const { code, phoneNumber, ...rest } = data;
+      const { code, phoneNumber, unit, ...rest } = data;
+
       const dataForm = {
         ...ParsedDetails,
         ...rest,
@@ -81,7 +82,6 @@ const PersonalDetails = () => {
             />
           )}
         </div>
-
         <div className="column gap-2">
           <p>Last name</p>
           <input
@@ -105,7 +105,6 @@ const PersonalDetails = () => {
             <ErrorMsg error={errors?.lastName?.message?.toString() as string} />
           )}
         </div>
-
         <div className="column gap-2">
           <p>Email</p>
           <input
