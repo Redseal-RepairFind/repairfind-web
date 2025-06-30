@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { CgClose } from "react-icons/cg";
+import { CgClose, CgPlayButton } from "react-icons/cg";
 import WaveSurfer from "wavesurfer.js";
 
 export default function AudioWaveform({ audioUrl }: { audioUrl: string }) {
@@ -157,7 +157,7 @@ export const WaveformPlayer = ({ audioUrl, removeWave }: Prop) => {
         onClick={togglePlay}
         className="bg-black py-1 px-2 items-center justify-center flex rounded-md text-white cursor-pointer"
       >
-        <p>▶</p>
+        <CgPlayButton color="#fff" size={24} />
       </button>
 
       <div ref={containerRef} className="w-[300px]" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, useEffect, useState } from "react";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import { BiChevronRight, BiSearch } from "react-icons/bi";
 import Header from "../ui/header";
 import { CgClose } from "react-icons/cg";
@@ -92,6 +92,7 @@ const dummySkills = [
 const FilterSkills = ({
   selectedSkill,
   setSelectedSkill,
+  modal,
 }: {
   selectedSkill: {
     skill: { _id: string; name: string } | null;
@@ -103,6 +104,7 @@ const FilterSkills = ({
       openModal: boolean;
     }>
   >;
+  modal?: boolean;
 }) => {
   const [searchSkill, setSearchSkill] = useState<string>("");
   const [skills, setSkills] = useState<any[]>([]);
@@ -118,8 +120,35 @@ const FilterSkills = ({
 
     getSkills();
   }, []);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setSelectedSkill((prev) => ({
+          ...prev,
+          openModal: false,
+        }));
+      }
+    }
+
+    if (selectedSkill.openModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    // Clean up
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectedSkill.openModal]);
+
   return (
-    <div className="space-y-2 relative">
+    <div className="space-y-2 relative" ref={modal ? containerRef : null}>
       <button
         className="input flex items-center justify-between cursor-pointer"
         onClick={() =>

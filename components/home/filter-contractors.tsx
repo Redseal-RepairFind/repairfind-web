@@ -7,6 +7,7 @@ import PlacesAutocomplete, { PredictionsType } from "./places-autocomplete";
 import FilterSkills from "./skills-select";
 import CustomBtn from "../ui/button";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const FilterSearch = () => {
   const [selectedPredictions, setSelectedPredictions] = useState<{
@@ -17,7 +18,7 @@ const FilterSearch = () => {
     openModal: false,
   });
   const [selectedSkills, setSelectedSkills] = useState<{
-    skill: PredictionsType | null;
+    skill: { _id: string; name: string } | null;
     openModal: boolean;
   }>({
     skill: null,
@@ -25,6 +26,8 @@ const FilterSearch = () => {
   });
 
   const router = useRouter();
+
+  console.log(selectedPredictions);
 
   return (
     <>
@@ -39,6 +42,7 @@ const FilterSearch = () => {
         <FilterSkills
           selectedSkill={selectedSkills as any}
           setSelectedSkill={setSelectedSkills as any}
+          modal={false}
         />
         <PlacesAutocomplete
           selectedPredictions={selectedPredictions}
@@ -48,7 +52,16 @@ const FilterSearch = () => {
           <CustomBtn
             variant="color"
             className="w-full"
-            onClick={() => router.push("/contractors")}
+            onClick={() => {
+              if (!selectedPredictions.prediction) {
+                toast.error("Kindly select an address");
+                return;
+              }
+
+              router.push(
+                `/contractors?latitude=${selectedPredictions?.prediction.latitude}&longitude=${selectedPredictions?.prediction.longitude}&category=${selectedSkills?.skill?.name}`
+              );
+            }}
           >
             Search
           </CustomBtn>
