@@ -428,20 +428,21 @@ const PostJobForm = () => {
               <p>Phone number</p>
               <div className="flex gap-2 items-center">
                 <select
-                  className="bg-mygray-100 py-1 rounded-md max-w-[50px]"
+                  className="bg-mygray-100 py-1 rounded-md max-w-[60px]"
                   {...register("code", {
                     required: "Select a country code",
                   })}
+                  defaultValue={"+1"}
                   onChange={(e) => {
-                    // update the selected option text (code) on selection
                     const selected = countriesPhoneCodes.find(
                       (cnt) => cnt.code === e.target.value
                     );
+
+                    // Override visible text in the select box to only show the code
                     e.target.options[e.target.selectedIndex].text =
                       selected?.code || "";
                   }}
                 >
-                  <option value={"+1 Canada"}>select</option>
                   {countriesPhoneCodes.map((cnt, idx) => (
                     <option key={idx} value={cnt.code}>
                       {cnt.name} {cnt.code}
