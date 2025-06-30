@@ -48,9 +48,6 @@ const PersonalDetails = () => {
   };
   return (
     <div className="relative z-10 column items-center  gap-5 py-8">
-      {/* <div className="w-[90%] md:w-[80%] flex justify-start">
-        <BackBtn name="Go back" />
-      </div> */}
       <div className="white-bg h-full column gap-5  text-input">
         <Header
           header="Enter your personal details"
@@ -181,6 +178,6 @@ const PersonalDetails = () => {
 
 export default PersonalDetails;
 
-const ErrorMsg = ({ error }: { error: string }) => {
+export const ErrorMsg = ({ error }: { error: string }) => {
   return <p className="text-red-600 font-sm">{error}</p>;
 };

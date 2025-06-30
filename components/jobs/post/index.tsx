@@ -2,7 +2,7 @@
 
 import FilterSkills from "@/components/home/skills-select";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 
 import voiceImg from "@/public/images/mic.png";
 import Img from "@/public/images/Image.png";
@@ -24,6 +24,9 @@ import AudioVisualizer, {
   WaveformPlayer,
 } from "@/components/ui/audio-visualizer";
 import { useForm } from "react-hook-form";
+import { ErrorMsg } from "../personal";
+import { countriesPhoneCodes } from "@/lib/constants";
+import { Jobs } from "@/lib/apis/jobs";
 
 type FileUploadType = {
   filename: string;
@@ -172,7 +175,7 @@ const PostJobForm = () => {
     if (!audioBlob) return;
 
     setFile((prev) => ({ ...prev, loading: true }));
-    toast.loading("Uploading audio...");
+    toast.loading("posting...");
 
     try {
       const filename = `recording-${Date.now()}.webm`;
@@ -209,6 +212,7 @@ const PostJobForm = () => {
         ...prev,
         loading: false,
       }));
+      toast.remove();
     }
   };
 
@@ -260,54 +264,74 @@ const PostJobForm = () => {
       toast.error(errors?.description?.message?.toString() as string);
       return;
     }
+
     if (!selectedSkills.skill) {
-      toast.error("Kindly Select a job category");
+      toast.error("Kindly select a job category");
       return;
     }
+
     if (!selectedPredictions.prediction) {
       toast.error("Kindly select your job's location");
       return;
     }
-    if (!file?.files?.length) {
-      toast.error("Kindly upload your jobs Image");
 
-      return;
-    }
     try {
-      if (audioUrl) {
-        const url = await uploadAudio();
+      let uploadedAudioUrl: any | null = null;
 
-        setPublicUrl(url as string);
+      // Upload audio if it exists
+      if (audioUrl) {
+        // toast.loading("Uploading audio...");
+        uploadedAudioUrl = await uploadAudio();
       }
 
-      const { description, ...rest } = selectedPredictions.prediction;
+      // Prepare location data
+      const pred = selectedPredictions.prediction;
+      const { code, phoneNumber, unit, phone, ...rest } = data;
 
       const locData = {
-        ...rest,
-        description: data?.unit || description,
-      };
-      // console.log(locData);
-      const formData = {
-        ...data,
-        category: selectedSkills.skill?.name,
-        location: locData,
-        ...(publicUrl && {
-          voiceDescription: {
-            url: publicUrl,
-          },
-        }),
-        media: file.files && file?.files.map((fil) => fil.publicUrl),
+        address: pred.address,
+        longitude: pred.longitude,
+        latitude: pred.latitude,
+        city: pred?.city,
+        country: pred.country, // typo? 'coyntry' => 'country'
+        region: pred?.region,
+        description: unit || pred.description,
       };
 
-      sessionStorage.setItem("formData", JSON.stringify(formData));
-      router.push("/jobs/personal");
-      // console.log(formData);
-    } catch (error) {
+      const formData = {
+        ...rest,
+        phoneNumber: {
+          code,
+          number: phone,
+        },
+        category: selectedSkills.skill?.name,
+        location: locData,
+        ...(uploadedAudioUrl && {
+          voiceDescription: {
+            url: uploadedAudioUrl,
+          },
+        }),
+        ...(file.files?.length && {
+          media: file.files.map((fil) => fil.publicUrl),
+        }),
+      };
+
+      toast.loading("Submitting job...");
+      await Jobs.listJob(formData);
+
+      toast.dismiss();
+      toast.success("Job listed successfully");
+      router.replace("/success");
+    } catch (error: any) {
       console.error(error);
+      toast.dismiss();
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      toast.dismiss();
     }
   };
 
-  console.log(file.files);
+  // console.log(file.files);
 
   const router = useRouter();
   return (
@@ -323,9 +347,130 @@ const PostJobForm = () => {
         {/* <div className="w-[90%] md:w-[80%] flex justify-start">
           <BackBtn name="Go back" />
         </div> */}
-        <div className="white-bg h-full column gap-5 md:gap-10 text-input">
+
+        <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm">
+          <GridForm>
+            <div className="column gap-2">
+              <p>First name</p>
+              <input
+                placeholder="Enter your first name"
+                className="input"
+                {...register("firstName", {
+                  required: "Enter your first name",
+                  minLength: {
+                    value: 3,
+                    message: "First name must be at least 3 characters",
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: "First name must not exceed 100 characters",
+                  },
+                })}
+                type="text"
+              />
+
+              {errors?.firstName && (
+                <ErrorMsg
+                  error={errors?.firstName?.message?.toString() as string}
+                />
+              )}
+            </div>
+            <div className="column gap-2">
+              <p>Last name</p>
+              <input
+                placeholder="Enter your last name"
+                className="input"
+                type="text"
+                {...register("lastName", {
+                  required: "Enter your Last name",
+                  minLength: {
+                    value: 3,
+                    message: "Last name must be at least 3 characters",
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: "Last name must not exceed 100 characters",
+                  },
+                })}
+              />
+
+              {errors?.lastName && (
+                <ErrorMsg
+                  error={errors?.lastName?.message?.toString() as string}
+                />
+              )}
+            </div>
+          </GridForm>
+          <GridForm>
+            <div className="column gap-2">
+              <p>Email</p>
+              <input
+                placeholder="Enter your email address"
+                className="input"
+                type="email"
+                {...register("email", {
+                  required: "Enter your email address",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
+              />
+
+              {errors?.email && (
+                <ErrorMsg
+                  error={errors?.email?.message?.toString() as string}
+                />
+              )}
+            </div>
+
+            <div className="column gap-2">
+              <p>Phone number</p>
+              <div className="flex gap-2 items-center">
+                <select
+                  className="bg-mygray-100 py-1 rounded-md max-w-[50px]"
+                  {...register("code", {
+                    required: "Select a country code",
+                  })}
+                  onChange={(e) => {
+                    // update the selected option text (code) on selection
+                    const selected = countriesPhoneCodes.find(
+                      (cnt) => cnt.code === e.target.value
+                    );
+                    e.target.options[e.target.selectedIndex].text =
+                      selected?.code || "";
+                  }}
+                >
+                  <option value={"+1 Canada"}>select</option>
+                  {countriesPhoneCodes.map((cnt, idx) => (
+                    <option key={idx} value={cnt.code}>
+                      {cnt.name} {cnt.code}
+                    </option>
+                  ))}
+                </select>
+
+                <input
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  className="input"
+                  {...register("phone", {
+                    required: "Phone number is required",
+                    pattern: {
+                      value: /^\+?[0-9]{7,15}$/,
+                      message: "Enter a valid phone number",
+                    },
+                  })}
+                />
+              </div>
+              {errors?.phone && (
+                <ErrorMsg
+                  error={errors?.phone?.message?.toString() as string}
+                />
+              )}
+            </div>
+          </GridForm>
           <div className="column gap-2">
-            <p>Job category</p>
+            <p className="text-xs md:text-sm">Job category</p>
             <FilterSkills
               selectedSkill={selectedSkills as any}
               setSelectedSkill={setSelectedSkills as any}
@@ -333,7 +478,7 @@ const PostJobForm = () => {
           </div>
 
           <div className="column gap-2">
-            <p>Job description</p>
+            <p className="text-xs md:text-sm">Job description</p>
             <textarea
               placeholder="Enter a detailed description of your job"
               rows={5}
@@ -349,29 +494,34 @@ const PostJobForm = () => {
             </p>
           </div>
 
-          <div className="column gap-2">
-            <p>Provide job location</p>
-            <PlacesAutocomplete
-              selectedPredictions={selectedPredictions}
-              setSelectedPredictions={setSelectedPredictions}
-            />
-          </div>
-          <div className="column gap-2">
-            <p>Unit number / suite (optional)</p>
-            <textarea
-              placeholder="Unit number / suite"
-              rows={3}
-              cols={3}
-              className="input w-full p-4"
-              {...register("unit")}
-            />
+          <GridForm>
+            <div className="column gap-2">
+              <p className="text-xs md:text-sm">Provide job location</p>
+              <PlacesAutocomplete
+                selectedPredictions={selectedPredictions}
+                setSelectedPredictions={setSelectedPredictions}
+                modal
+              />
+            </div>
+            <div className="column gap-2">
+              <p className="text-xs md:text-sm">
+                Unit number / suite (optional)
+              </p>
+              <textarea
+                placeholder="Unit number / suite"
+                rows={1}
+                cols={1}
+                className="input w-full p-4"
+                {...register("unit")}
+              />
 
-            <p className="text-red-600">
-              {errors?.description?.message?.toString() as string}
-            </p>
-          </div>
+              <p className="text-red-600">
+                {errors?.description?.message?.toString() as string}
+              </p>
+            </div>
+          </GridForm>
           <div className="column gap-2">
-            <p>Voice description(optional)</p>
+            <p className="text-xs md:text-sm">Voice description(optional)</p>
             {isRecording && stream ? (
               <div className="gap-2 flex items-center">
                 <button
@@ -414,7 +564,7 @@ const PostJobForm = () => {
           </div>
 
           <div className="column gap-2">
-            <p>Date</p>
+            <p className="text-xs md:text-sm">Date</p>
             <CustomDatePicker
               selected={selected}
               setSelected={setSelected}
@@ -432,7 +582,7 @@ const PostJobForm = () => {
               className="hidden"
             />
 
-            <p>
+            <p className="text-xs md:text-sm">
               Upload images/ Videos{" "}
               <span className="message-text">(Highly Recommended)</span>
             </p>
@@ -520,13 +670,15 @@ const PostJobForm = () => {
               onClick={() => setIsSelected((is) => !is)}
             >
               <button
-                className={`h-6 w-6 rounded-md bg-mygray-100 flex items-center justify-center cursor-pointer ${
+                className={`h-6 w-6 rounded-md ${
+                  isSelected ? "bg-mygray-100" : "bg-mygray-300"
+                } flex items-center justify-center cursor-pointer ${
                   isSelected ? "border" : ""
-                }`}
+                } cursor-pointer`}
               >
                 {isSelected ? <BiCheck /> : null}
               </button>
-              <p className={`${isSelected ? "" : "text-mygray-300"}`}>
+              <p className={`${isSelected ? "" : "text-mygray-400"}`}>
                 I require an onsite evaluation
               </p>
             </div>
@@ -552,3 +704,7 @@ const PostJobForm = () => {
 };
 
 export default PostJobForm;
+
+const GridForm = ({ children }: { children: ReactNode }) => {
+  return <div className="grid grid-cols-2 gap-2">{children}</div>;
+};

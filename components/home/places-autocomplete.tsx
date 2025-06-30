@@ -166,7 +166,7 @@ const PlacesAutocomplete = ({
       {selectedPredictions.openModal && (
         <div
           className="border border-mygray-200 shadow-2xl rounded p-2 max-h-[400px] overflow-y-auto flex flex-col gap-4 absolute left-0 right-0 bg-white z-50"
-          onClick={(e) => e.stopPropagation()} // 🛑 Prevent modal from closing
+          onClick={(e) => e.stopPropagation()}
         >
           <input
             type="text"
@@ -185,7 +185,7 @@ const PlacesAutocomplete = ({
                 className="p-1 cursor-pointer hover:bg-gray-200"
               >
                 <button
-                  className="w-full h-full text-start text-sm"
+                  className="w-full h-full text-start  sm:text-sm"
                   onClick={async (e) => {
                     e.stopPropagation();
                     try {
