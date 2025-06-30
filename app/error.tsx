@@ -23,7 +23,7 @@ export default function Error({
       <p>{error.message}</p>
       <p>
         <button
-          className="bg-gray-600 py-2 px-4 rounded-md  text-purple-100"
+          className="bg-gray-600 py-2 px-4 rounded-md  text-purple-100 cursor-pointer"
           onClick={reset}
         >
           Refresh
