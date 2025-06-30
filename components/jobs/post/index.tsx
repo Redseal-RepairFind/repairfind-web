@@ -406,7 +406,7 @@ const PostJobForm = () => {
               <p>Email</p>
               <input
                 placeholder="Enter your email address"
-                className="input"
+                className="input "
                 type="email"
                 {...register("email", {
                   required: "Enter your email address",
