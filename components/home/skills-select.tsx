@@ -104,7 +104,7 @@ const FilterSkills = ({
       openModal: boolean;
     }>
   >;
-  modal: boolean;
+  modal?: boolean;
 }) => {
   const [searchSkill, setSearchSkill] = useState<string>("");
   const [skills, setSkills] = useState<any[]>([]);

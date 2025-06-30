@@ -42,6 +42,7 @@ const FilterSearch = () => {
         <FilterSkills
           selectedSkill={selectedSkills as any}
           setSelectedSkill={setSelectedSkills as any}
+          modal={false}
         />
         <PlacesAutocomplete
           selectedPredictions={selectedPredictions}
