@@ -85,7 +85,7 @@
   }
 
   .input {
-    @apply rounded-[14px] bg-mygray-100 p-2 w-full focus:outline-none text-base
+    @apply  bg-mygray-100 p-2 w-full focus:outline-none text-base
   }
 
   .input-text {

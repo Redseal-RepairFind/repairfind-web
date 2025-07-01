@@ -353,7 +353,7 @@ const PostJobForm = () => {
             <div className="column gap-2">
               <p>First name</p>
               <input
-                placeholder="Enter your first name"
+                placeholder="First name"
                 className="input"
                 {...register("firstName", {
                   required: "Enter your first name",
@@ -378,7 +378,7 @@ const PostJobForm = () => {
             <div className="column gap-2">
               <p>Last name</p>
               <input
-                placeholder="Enter your last name"
+                placeholder="Last name"
                 className="input"
                 type="text"
                 {...register("lastName", {
@@ -403,9 +403,9 @@ const PostJobForm = () => {
           </GridForm>
           <GridForm>
             <div className="column gap-2">
-              <p>Email</p>
+              <p>Email address</p>
               <input
-                placeholder="Enter your email address"
+                placeholder="Email address"
                 className="input "
                 type="email"
                 {...register("email", {
@@ -428,7 +428,7 @@ const PostJobForm = () => {
               <p>Phone number</p>
               <div className="flex gap-2 items-center">
                 <select
-                  className="bg-mygray-100 py-1 rounded-md max-w-[60px]"
+                  className="py-2 bg-mygray-100  max-w-[60px]"
                   {...register("code", {
                     required: "Select a country code",
                   })}
@@ -452,7 +452,7 @@ const PostJobForm = () => {
 
                 <input
                   type="tel"
-                  placeholder="Enter your phone number"
+                  placeholder="Phone number"
                   className="input"
                   {...register("phone", {
                     required: "Phone number is required",
