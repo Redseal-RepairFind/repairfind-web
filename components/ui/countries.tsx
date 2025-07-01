@@ -72,7 +72,7 @@ top-10 left-1/2 -translate-x-1/2 md:top-10 md:left-auto md:translate-x-0 no-scro
                   setCountriesToList(countriesPhoneCodes);
                 }
               }}
-              className="p-2 border border-mygray-200 w-full rounded-md mt-2 mx-2"
+              className="p-2 border text-base border-mygray-200 w-full rounded-md mt-2 mx-2"
             />
 
             {countriesToList?.map((cnt) => (
