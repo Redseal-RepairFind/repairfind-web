@@ -51,20 +51,16 @@ const PlacesAutocomplete = ({
       openModal: boolean;
     }>
   >;
-
   modal?: boolean;
 }) => {
   const [input, setInput] = useState("");
-  const [predictions, setPredictions] = useState<
-    { place_id: string; description: string }[]
-  >([]);
-
-  console.log(modal);
+  const [predictions, setPredictions] = useState<any[]>([]);
 
   const autocompleteServiceRef =
     useRef<google.maps.places.AutocompleteService | null>(null);
-
   const containerRef = useRef<any>(null);
+
+  // Set current location prediction if none selected
   useEffect(() => {
     if (!selectedPredictions.prediction && input === "") {
       navigator.geolocation.getCurrentPosition(
@@ -86,11 +82,27 @@ const PlacesAutocomplete = ({
                 );
               }
             );
-            const currentAddress = results[0]?.formatted_address;
-            if (currentAddress) {
-              // console.log(results[0]);
-              setInput(currentAddress);
-            }
+            const components = results[0]?.address_components || [];
+            const getComp = (type: string) =>
+              components.find((c) => c.types.includes(type))?.long_name || "";
+
+            const currentLocation: PredictionsType = {
+              city:
+                getComp("locality") || getComp("administrative_area_level_2"),
+              region: getComp("administrative_area_level_1"),
+              country: getComp("country"),
+              address: results[0]?.formatted_address || "",
+              latitude,
+              longitude,
+              description: results[0]?.formatted_address || "Current Location",
+            };
+
+            setPredictions([
+              {
+                place_id: "current-location",
+                ...currentLocation, // includes description
+              },
+            ]);
           } catch (err) {
             console.error("Error getting current address:", err);
           }
@@ -103,6 +115,7 @@ const PlacesAutocomplete = ({
     }
   }, [selectedPredictions.prediction]);
 
+  // Click outside to close
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -118,10 +131,7 @@ const PlacesAutocomplete = ({
 
     if (selectedPredictions.openModal) {
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
     }
-    // Clean up
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -139,7 +149,7 @@ const PlacesAutocomplete = ({
       autocompleteServiceRef.current.getPlacePredictions({ input }, (preds) => {
         setPredictions(preds || []);
       });
-    } else {
+    } else if (input === "") {
       setPredictions([]);
     }
   }, [input]);
@@ -180,14 +190,40 @@ const PlacesAutocomplete = ({
           />
           <ul>
             {predictions.map((prediction) => (
-              <li
-                key={prediction.place_id}
-                className="p-1 cursor-pointer hover:bg-gray-200"
-              >
+              <li key={prediction.place_id} className="p-1 hover:bg-gray-200">
                 <button
-                  className="w-full h-full text-start  sm:text-sm"
+                  className="w-full h-full text-start sm:text-sm"
                   onClick={async (e) => {
                     e.stopPropagation();
+
+                    if (prediction.place_id === "current-location") {
+                      const {
+                        city,
+                        region,
+                        country,
+                        address,
+                        latitude,
+                        longitude,
+                        description,
+                      } = prediction;
+
+                      setSelectedPredictions({
+                        prediction: {
+                          city,
+                          region,
+                          country,
+                          address,
+                          latitude,
+                          longitude,
+                          description,
+                        },
+                        openModal: false,
+                      });
+                      setInput("");
+                      setPredictions([]);
+                      return;
+                    }
+
                     try {
                       const details = await getPlaceDetails(
                         prediction.place_id
@@ -209,11 +245,12 @@ const PlacesAutocomplete = ({
                         longitude: details.geometry?.location?.lng() || 0,
                         description: prediction.description,
                       };
+
                       setSelectedPredictions({
                         prediction: fullDetails,
                         openModal: false,
                       });
-                      setInput(prediction.description);
+                      setInput("");
                       setPredictions([]);
                     } catch (err) {
                       console.error("Error fetching place details:", err);
