@@ -52,7 +52,7 @@ const CountryList = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.05 }}
-            className="h-80 w-[90vw] max-w-xs md:w-80 absolute bg-white shadow-lg overflow-y-auto rounded-md border border-gray-200 
+            className="h-80 w-[90vw] max-w-xs md:w-80 absolute bg-white shadow-lg overflow-y-auto overflow-x-hidden rounded-md border border-gray-200 
 top-10 left-1/2 -translate-x-1/2 md:top-10 md:left-auto md:translate-x-0 no-scrollbar"
           >
             <input
