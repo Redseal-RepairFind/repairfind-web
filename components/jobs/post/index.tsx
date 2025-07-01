@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMsg } from "../personal";
 import { countriesPhoneCodes } from "@/lib/constants";
 import { Jobs } from "@/lib/apis/jobs";
+import CountryList, { CountryType } from "@/components/ui/countries";
 
 type FileUploadType = {
   filename: string;
@@ -54,7 +55,12 @@ const PostJobForm = () => {
 
   const [selected, setSelected] = useState<Date | undefined>(undefined);
   const [isSelected, setIsSelected] = useState(false);
-
+  const [country, setCountry] = useState<CountryType>({
+    name: "Canada",
+    flag: "🇨🇦",
+    code: "CA",
+    dial_code: "+1",
+  });
   const [file, setFile] = useState<{
     loading: boolean;
     files: FileUploadType[] | null;
@@ -301,7 +307,7 @@ const PostJobForm = () => {
       const formData = {
         ...rest,
         phoneNumber: {
-          code,
+          code: country.dial_code,
           number: phone,
         },
         category: selectedSkills.skill?.name,
@@ -316,6 +322,7 @@ const PostJobForm = () => {
         }),
       };
 
+      console.log(formData);
       toast.loading("Submitting job...");
       await Jobs.listJob(formData);
 
@@ -427,7 +434,7 @@ const PostJobForm = () => {
             <div className="column gap-2">
               <p>Phone number</p>
               <div className="flex gap-2 items-center">
-                <select
+                {/* <select
                   className="py-2 bg-mygray-100  max-w-[60px]"
                   {...register("code", {
                     required: "Select a country code",
@@ -435,21 +442,21 @@ const PostJobForm = () => {
                   defaultValue={"+1"}
                   onChange={(e) => {
                     const selected = countriesPhoneCodes.find(
-                      (cnt) => cnt.code === e.target.value
+                      (cnt) => cnt.dial_code === e.target.value
                     );
 
                     // Override visible text in the select box to only show the code
                     e.target.options[e.target.selectedIndex].text =
-                      selected?.code || "";
+                      selected?.flag || "";
                   }}
                 >
                   {countriesPhoneCodes.map((cnt, idx) => (
-                    <option key={idx} value={cnt.code}>
-                      {cnt.name} {cnt.code}
+                    <option key={idx} value={cnt.dial_code} className="text-lg">
+                      {cnt.name} {cnt.flag} {cnt.dial_code}
                     </option>
                   ))}
-                </select>
-
+                </select> */}
+                <CountryList setCountry={setCountry} country={country} />
                 <input
                   type="tel"
                   placeholder="Phone number"
