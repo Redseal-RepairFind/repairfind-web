@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 const ContractorsClientLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full column">
-      <nav className="h-[108px] w-full bg-mygray-200"></nav>
+      {/* <nav className="h-[108px] w-full bg-mygray-200"></nav> */}
       <nav className="h-[120px] w-full bg-mygray-0 border-b border-b-mygray-200 flex-center gap-2 px-4">
         <Image
           src={"/images/editItem01.png"}

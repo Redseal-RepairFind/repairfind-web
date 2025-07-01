@@ -3,48 +3,15 @@ import Header from "../ui/header";
 import img1 from "@/public/images/cont.jpg";
 import img2 from "@/public/images/cont2.jpg";
 
-const PopularJobs = () => {
+const PopularJobs = ({ data }: { data: any }) => {
   return (
     <section className="w-full column gap-4 vertical-space">
-      <Header header="Popular jobs" variant="h3" shade="dark" />
+      <Header header="Recommended Contractors" variant="h3" shade="dark" />
 
       <div className="grid-3">
-        <PopularJobsItem
-          item={{
-            image: img1,
-            job: {
-              name: "Decks",
-            },
-            count: 50,
-          }}
-        />
-        <PopularJobsItem
-          item={{
-            image: img2,
-            job: {
-              name: "Flooring",
-            },
-            count: 150,
-          }}
-        />
-        <PopularJobsItem
-          item={{
-            image: img2,
-            job: {
-              name: "Flooring",
-            },
-            count: 150,
-          }}
-        />
-        <PopularJobsItem
-          item={{
-            image: img1,
-            job: {
-              name: "Framing",
-            },
-            count: 120,
-          }}
-        />
+        {data?.data?.map((item: any) => (
+          <PopularJobsItem item={item} key={item?._id} />
+        ))}
       </div>
     </section>
   );
@@ -53,11 +20,12 @@ const PopularJobs = () => {
 export default PopularJobs;
 
 const PopularJobsItem = ({ item }: { item: any }) => {
+  // console.log(item);
   return (
     <div className="w-full h-[379px] column gap-4 bg-mygray-50 rounded-b-xl">
       <div className="w-full h-[250px] relative">
         <Image
-          src={item?.image}
+          src={item?.profilePhoto?.url || img1}
           alt="job images"
           fill
           className="object-cover object-center z-0"
@@ -65,8 +33,14 @@ const PopularJobsItem = ({ item }: { item: any }) => {
       </div>
 
       <div className="column gap-2 items-center justify-center ">
-        <Header header={item?.job?.name} variant="h3" shade="dark" />
-        <p className="message-text">Over {item?.count} contractors</p>
+        <Header header={item?.name} variant="h3" shade="dark" />
+        <p className="message-text">
+          Has {item?.profile?.skills?.length} Skills with over{" "}
+          {item?.stats?.jobsCompleted <= 1
+            ? item?.stats?.jobsCompleted
+            : item?.stats?.jobsCompleted - 1}{" "}
+          completed jobs
+        </p>
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 "use client";
 
-import { Dispatch, useState } from "react";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import { BiChevronRight, BiSearch } from "react-icons/bi";
 import Header from "../ui/header";
 import { CgClose } from "react-icons/cg";
+import Skills from "@/lib/apis/skills";
 
 const dummySkills = [
   {
@@ -91,6 +92,7 @@ const dummySkills = [
 const FilterSkills = ({
   selectedSkill,
   setSelectedSkill,
+  modal,
 }: {
   selectedSkill: {
     skill: { _id: string; name: string } | null;
@@ -102,10 +104,51 @@ const FilterSkills = ({
       openModal: boolean;
     }>
   >;
+  modal?: boolean;
 }) => {
   const [searchSkill, setSearchSkill] = useState<string>("");
+  const [skills, setSkills] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function getSkills() {
+      const response = await Skills.getSkills();
+
+      // const data = response.json();
+
+      setSkills(response?.data);
+    }
+
+    getSkills();
+  }, []);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setSelectedSkill((prev) => ({
+          ...prev,
+          openModal: false,
+        }));
+      }
+    }
+
+    if (selectedSkill.openModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    // Clean up
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectedSkill.openModal]);
+
   return (
-    <div className="space-y-2 relative">
+    <div className="space-y-2 relative" ref={modal ? containerRef : null}>
       <button
         className="input flex items-center justify-between cursor-pointer"
         onClick={() =>
@@ -152,14 +195,14 @@ const FilterSkills = ({
             />
           </div>
           <div className="flex flex-wrap gap-4 items-center">
-            {dummySkills.map((item) => (
+            {skills?.map((item) => (
               <button
                 className={`${
-                  item?._id === selectedSkill.skill?._id
+                  item?.name === selectedSkill.skill?.name
                     ? "bg-myblack-0 text-mygray-0"
                     : "bg-mygray-0"
                 } px-4 py-2 rounded-sm text-sm cursor-pointer`}
-                key={item._id}
+                key={item?.name}
                 onClick={() =>
                   setSelectedSkill({ skill: item, openModal: false })
                 }

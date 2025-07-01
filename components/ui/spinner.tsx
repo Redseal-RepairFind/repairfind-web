@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingTemplate = () => {
+const LoadingTemplate = ({ isMessage = true }: { isMessage?: boolean }) => {
   return (
     <div className="flex items-center justify-center absolute inset-1 bg-white/90 z-50">
       <div className="flex items-center space-x-1 text-[#333] z-[100]">
@@ -18,7 +18,7 @@ const LoadingTemplate = () => {
           />
         </svg>
 
-        <div className="">Loading ...</div>
+        {isMessage && <div className="">Loading ...</div>}
       </div>
     </div>
   );

@@ -9,19 +9,14 @@ import { KmMeasurement, RateItem } from "./contractor-item";
 import { Calendar } from "../ui/date";
 import { BsStarFill } from "react-icons/bs";
 import { BiSolidLeftArrow } from "react-icons/bi";
+import { getAvailableDatesByWeekdays } from "@/lib/helpers";
+import { useRouter } from "next/navigation";
 
-const availableDates = [
-  new Date("2025-06-24"),
-  new Date("2025-06-25"),
-  new Date("2025-06-26"),
-  new Date("2025-06-27"),
-  new Date("2025-06-28"),
-  new Date("2025-06-29"),
-  new Date("2025-06-30"),
-];
-
-const OtherContractorInfo = () => {
-  const [toggle, setToggle] = useState<boolean>(false);
+const OtherContractorInfo = ({ data }: { data: any }) => {
+  const [toggle, setToggle] = useState<boolean | undefined>(false);
+  const router = useRouter();
+  const days = data?.profile?.availability?.map((day: any) => day?.day);
+  const availableDates = getAvailableDatesByWeekdays(days);
 
   return (
     <div className="column gap-6">
@@ -37,7 +32,7 @@ const OtherContractorInfo = () => {
           <Header variant="h3" shade="dark" header="Years of experience" />
         </div>
 
-        <p>7</p>
+        <p>{data?.profile?.experienceYear}</p>
       </div>
       <div className="py-5   flex items-center justify-between">
         <div className="gap-2 flex items-center">
@@ -55,7 +50,11 @@ const OtherContractorInfo = () => {
           />
         </div>
 
-        <ToggleElement isToggled={toggle} setIsToggled={setToggle} grayBg />
+        <ToggleElement
+          isToggled={data?.profile?.emergencyJobs}
+          setIsToggled={setToggle}
+          grayBg
+        />
       </div>
       <div className="px-5 md:px-6 xl:px-8">
         <RateItem className="w-full justify-start">
@@ -70,11 +69,7 @@ const OtherContractorInfo = () => {
               </div>
               <Header variant="h3" shade="dark" header="About" />
             </div>
-            <p className="message-text">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque,
-              maiores. Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Fugiat, molestiae.
-            </p>
+            <p className="message-text">{data?.profile?.about}</p>
           </div>
         </RateItem>
       </div>
@@ -90,7 +85,7 @@ const OtherContractorInfo = () => {
           <p className="message-text">London Uk</p>
         </div>
 
-        <KmMeasurement message="2km away" />
+        <KmMeasurement message={data?.distance || 0 + " " + "km Away"} />
       </div>
 
       <div className="flex items-center gap-2">
@@ -110,13 +105,13 @@ const OtherContractorInfo = () => {
       <div className="column gap-4">
         <Header variant="h3" shade="dark" header="Photos" />
         <div className="grid-3-img">
-          {dummyImgs.map((img, i) => (
+          {data?.profile.previousJobPhotos.map((img: any, i: number) => (
             <div
               className="relative w-full h-[120px] md:h-[120px] rounded-md"
               key={i}
             >
               <Image
-                src={img}
+                src={img?.url}
                 alt="Contractor Background"
                 fill
                 className="object-cover rounded-lg"
@@ -127,29 +122,30 @@ const OtherContractorInfo = () => {
         </div>
         <Header variant="h3" shade="dark" header="Videos" />
 
-        <div className="overflow-flex gap-4 w-full  no-scrollba">
-          {dummyImgs.map((img, i) => (
+        <div className="grid-3-img gap-4 w-full  no-scrollbar">
+          {data?.profile.previousJobVideos.map((img: any, i: number) => (
             <div
-              className="relative h-[120px] w-[250px] flex-shrink-0 rounded-md"
+              className="relative h-[120px] w-[200px] flex-shrink-0 rounded-md"
               key={i}
             >
-              <Image
-                src={img}
-                alt="Contractor Background"
-                fill
+              <video
+                src={img?.src}
+                controls
+                // autoPlay
                 className="object-cover rounded-lg"
-                priority
-              />
+              >
+                Your browser does not support video type
+              </video>
             </div>
           ))}
         </div>
       </div>
-      <div className="flex justify-start">
+      {/* <div className="flex justify-start">
         <Header variant="h1" shade="dark" header="Review" />
-      </div>
+      </div> */}
 
       <div className="overflow-flex gap-4 w-full  no-scrollbar">
-        {dummyReviews.map((review) => (
+        {/* {dummyReviews.map((review) => (
           <RateItem
             className="relative   max-w-[300px] flex-shrink-0"
             key={review.id}
@@ -177,12 +173,15 @@ const OtherContractorInfo = () => {
               <p className="message-text">{review.review}</p>
             </div>
           </RateItem>
-        ))}
+        ))} */}
       </div>
 
       <div className="flex-space gap-5 mt-6">
         <button className="btn-secondary w-full">Make Request</button>
-        <button className="btn-primary justify-center flex items-center gap-2 w-full">
+        <button
+          className="btn-primary justify-center flex items-center gap-2 w-full"
+          onClick={() => router.back()}
+        >
           <BiSolidLeftArrow />
           <p>Back</p>
         </button>

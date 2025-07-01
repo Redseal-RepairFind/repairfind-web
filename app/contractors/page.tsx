@@ -1,6 +1,5 @@
 import ContractorsList from "@/components/contractors/contractors";
-
-const Contractors = () => {
+const Contractors = async () => {
   return (
     <>
       <ContractorsList />;

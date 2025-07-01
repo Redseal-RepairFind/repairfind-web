@@ -1,6 +1,9 @@
 "use client";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleMapsProvider } from "./google-maps-provider";
+
+const queryClient = new QueryClient();
 
 const LayoutClient = ({
   children,
@@ -9,7 +12,9 @@ const LayoutClient = ({
 }>) => {
   return (
     <main className="2xl:w-[1440px] w-full">
-      <GoogleMapsProvider>{children}</GoogleMapsProvider>
+      <QueryClientProvider client={queryClient}>
+        <GoogleMapsProvider>{children}</GoogleMapsProvider>
+      </QueryClientProvider>
     </main>
   );
 };
