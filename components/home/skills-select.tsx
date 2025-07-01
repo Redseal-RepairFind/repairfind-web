@@ -195,21 +195,25 @@ const FilterSkills = ({
             />
           </div>
           <div className="flex flex-wrap gap-4 items-center">
-            {skills?.map((item) => (
-              <button
-                className={`${
-                  item?.name === selectedSkill.skill?.name
-                    ? "bg-myblack-0 text-mygray-0"
-                    : "bg-mygray-0"
-                } px-4 py-2 rounded-sm text-sm cursor-pointer`}
-                key={item?.name}
-                onClick={() =>
-                  setSelectedSkill({ skill: item, openModal: false })
-                }
-              >
-                {item.name}
-              </button>
-            ))}
+            {skills
+              ?.filter((item) =>
+                item.name.toLowerCase().includes(searchSkill.toLowerCase())
+              )
+              .map((item) => (
+                <button
+                  className={`${
+                    item?.name === selectedSkill.skill?.name
+                      ? "bg-myblack-0 text-mygray-0"
+                      : "bg-mygray-0"
+                  } px-4 py-2 rounded-sm text-sm cursor-pointer`}
+                  key={item?._id}
+                  onClick={() =>
+                    setSelectedSkill({ skill: item, openModal: false })
+                  }
+                >
+                  {item.name}
+                </button>
+              ))}
           </div>
         </div>
       ) : null}

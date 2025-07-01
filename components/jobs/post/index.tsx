@@ -502,7 +502,7 @@ const PostJobForm = () => {
             </p>
           </div>
 
-          <GridForm>
+          <div className="grid md:grid-cols-2 gap-5 md:gap-3">
             <div className="column gap-2">
               <p className="text-xs md:text-sm">Provide job location</p>
               <PlacesAutocomplete
@@ -527,7 +527,7 @@ const PostJobForm = () => {
                 {errors?.description?.message?.toString() as string}
               </p>
             </div>
-          </GridForm>
+          </div>
           <div className="column gap-2">
             <p className="text-xs md:text-sm">Voice description(optional)</p>
             {isRecording && stream ? (
