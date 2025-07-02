@@ -187,6 +187,7 @@ const PlacesAutocomplete = ({
               e.stopPropagation();
             }}
             className="p-2 w-full border border-mygray-400"
+            autoFocus
           />
           <ul>
             {predictions.map((prediction) => (
