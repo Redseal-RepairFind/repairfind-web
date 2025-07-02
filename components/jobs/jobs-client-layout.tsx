@@ -19,7 +19,7 @@ const JobsClientLayout = ({ children }: { children: ReactNode }) => {
         />
         <p className="input-text">
           {pathname.includes("post")
-            ? "Please include as much information as can to help us connect you to the best contractor for your job posting"
+            ? "Please include as much information as you can to help us connect you to the best contractor for your job posting"
             : "To allow you get a feedback from contractors that will be sending bids, we need to have your personal Information"}
         </p>
       </nav>
