@@ -350,11 +350,13 @@ const PostJobForm = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white to-white" />
 
       {/* Your content here */}
-      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8">
+      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen">
+        {/* <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8"> */}
         {/* <div className="w-[90%] md:w-[80%] flex justify-start">
           <BackBtn name="Go back" />
         </div> */}
 
+        {/* <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm"> */}
         <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm">
           <GridForm>
             <div className="column gap-2">

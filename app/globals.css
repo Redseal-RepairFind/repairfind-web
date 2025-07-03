@@ -78,8 +78,11 @@
   }
 
   .white-bg {
-    @apply bg-white  rounded-xl w-[95%]  md:w-[80%] shadow-lg border border-[#cecece] p-4 
+    @apply bg-white  rounded-xl w-full shadow-lg border border-[#cecece] p-4 
   }
+  /* .white-bg {
+    @apply bg-white  rounded-xl w-[95%]  md:w-[80%] shadow-lg border border-[#cecece] p-4 
+  } */
   .white-bg-0 {
     @apply bg-white  rounded-lg w-full shadow-sm border border-[#cecece] md:p-4 p-2
   }
