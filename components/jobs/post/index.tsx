@@ -350,7 +350,7 @@ const PostJobForm = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white to-white" />
 
       {/* Your content here */}
-      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen">
+      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen pb-8">
         {/* <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8"> */}
         {/* <div className="w-[90%] md:w-[80%] flex justify-start">
           <BackBtn name="Go back" />
@@ -530,7 +530,7 @@ const PostJobForm = () => {
               </p>
             </div>
           </div>
-          <div className="column gap-2">
+          {/* <div className="column gap-2">
             <p className="text-xs md:text-sm">Voice description(optional)</p>
             {isRecording && stream ? (
               <div className="gap-2 flex items-center">
@@ -540,7 +540,6 @@ const PostJobForm = () => {
                 >
                   <BiStop color="#fff" size={24} />
                 </button>
-                {/* <AudioVisualizer audioUrl={audioUrl as string} /> */}
                 <LiveVisualizer stream={stream} />
               </div>
             ) : audioUrl ? (
@@ -571,7 +570,7 @@ const PostJobForm = () => {
                 />
               </button>
             )}
-          </div>
+          </div> */}
 
           <div className="column gap-2">
             <p className="text-xs md:text-sm">Date</p>
