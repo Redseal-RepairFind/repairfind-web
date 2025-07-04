@@ -530,7 +530,7 @@ const PostJobForm = () => {
               </p>
             </div>
           </div>
-          {/* <div className="column gap-2">
+          <div className="column gap-2">
             <p className="text-xs md:text-sm">Voice description(optional)</p>
             {isRecording && stream ? (
               <div className="gap-2 flex items-center">
@@ -570,7 +570,7 @@ const PostJobForm = () => {
                 />
               </button>
             )}
-          </div> */}
+          </div>
 
           <div className="column gap-2">
             <p className="text-xs md:text-sm">Date</p>
