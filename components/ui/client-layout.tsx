@@ -11,8 +11,8 @@ const LayoutClient = ({
   children: React.ReactNode;
 }>) => {
   return (
-    // <main className="2xl:w-[1440px] w-full">
-    <main className=" w-full">
+    <main className="2xl:w-[1440px] w-full">
+      {/* // <main className=" w-full"> */}
       <QueryClientProvider client={queryClient}>
         <GoogleMapsProvider>{children}</GoogleMapsProvider>
       </QueryClientProvider>

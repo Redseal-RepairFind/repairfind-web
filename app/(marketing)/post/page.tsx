@@ -24,10 +24,10 @@ import AudioVisualizer, {
   WaveformPlayer,
 } from "@/components/ui/audio-visualizer";
 import { useForm } from "react-hook-form";
-import { ErrorMsg } from "../personal";
 import { countriesPhoneCodes } from "@/lib/constants";
 import { Jobs } from "@/lib/apis/jobs";
 import CountryList, { CountryType } from "@/components/ui/countries";
+import { ErrorMsg } from "@/components/jobs/personal";
 
 type FileUploadType = {
   filename: string;
@@ -37,7 +37,7 @@ type FileUploadType = {
   fileType: string; // ✅ this is now added properly
 };
 
-const PostJobForm = () => {
+const PostForm = () => {
   const [selectedPredictions, setSelectedPredictions] = useState<{
     prediction: PredictionsType | null;
     openModal: boolean;
@@ -350,14 +350,14 @@ const PostJobForm = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white to-white" />
 
       {/* Your content here */}
-      {/* <div className="relative z-10 column items-center justify-center gap-5 min-h-screen pb-8"> */}
-      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8">
+      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen">
+        {/* <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8"> */}
         {/* <div className="w-[90%] md:w-[80%] flex justify-start">
           <BackBtn name="Go back" />
         </div> */}
 
-        <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm">
-          {/* <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm"> */}
+        {/* <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm"> */}
+        <div className="white-bgp h-full column gap-5 md:gap-10 text-input text-xs md:text-sm">
           <GridForm>
             <div className="column gap-2">
               <p>First name</p>
@@ -697,22 +697,23 @@ const PostJobForm = () => {
               clicking the box. Leave unchecked if you decline
             </p>
           </div>
-        </div>
-
-        <div className="w-[300px] max-w-[300px]">
-          <button
-            className="btn-primary w-full"
-            onClick={handleSubmit(submitForm)}
-          >
-            Proceed
-          </button>
+          <div className=" w-full flex items-center justify-center">
+            <div className="w-64">
+              <button
+                className="btn-secondary w-full"
+                onClick={handleSubmit(submitForm)}
+              >
+                Make A Quote
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default PostJobForm;
+export default PostForm;
 
 const GridForm = ({ children }: { children: ReactNode }) => {
   return <div className="grid grid-cols-2 gap-2">{children}</div>;
