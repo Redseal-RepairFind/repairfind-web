@@ -28,6 +28,7 @@ import { ErrorMsg } from "../personal";
 import { countriesPhoneCodes } from "@/lib/constants";
 import { Jobs } from "@/lib/apis/jobs";
 import CountryList, { CountryType } from "@/components/ui/countries";
+import dayjs from "dayjs";
 
 type FileUploadType = {
   filename: string;
@@ -320,6 +321,8 @@ const PostJobForm = () => {
         ...(file.files?.length && {
           media: file.files.map((fil) => fil.publicUrl),
         }),
+        date: dayjs(selected?.toISOString()).format("YYYY-MM-DD"),
+        requiresSiteVisit: isSelected,
       };
 
       console.log(formData);

@@ -18,6 +18,8 @@ type PayloaListingType = {
   voiceDescription?: {
     url: string;
   };
+  requiresSiteVisit: boolean;
+  date: string;
 };
 
 const url = "/common";

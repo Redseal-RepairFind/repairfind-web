@@ -28,6 +28,7 @@ import { countriesPhoneCodes } from "@/lib/constants";
 import { Jobs } from "@/lib/apis/jobs";
 import CountryList, { CountryType } from "@/components/ui/countries";
 import { ErrorMsg } from "@/components/jobs/personal";
+import dayjs from "dayjs";
 
 type FileUploadType = {
   filename: string;
@@ -83,7 +84,7 @@ const PostForm = () => {
     setFocus,
   } = useForm();
 
-  // console.log(file);
+  // console.log();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -292,7 +293,7 @@ const PostForm = () => {
 
       // Prepare location data
       const pred = selectedPredictions.prediction;
-      const { code, phoneNumber, unit, phone, ...rest } = data;
+      const { code, phoneNumber, unit, phone, site_visit, ...rest } = data;
 
       const locData = {
         address: pred.address,
@@ -320,21 +321,27 @@ const PostForm = () => {
         ...(file.files?.length && {
           media: file.files.map((fil) => fil.publicUrl),
         }),
+        date: dayjs(selected?.toISOString()).format("YYYY-MM-DD"),
+        requiresSiteVisit: site_visit === "true" ? true : false,
       };
 
-      console.log(formData);
+      // console.log(formData);
       toast.loading("Submitting job...");
       await Jobs.listJob(formData);
 
-      toast.dismiss();
+      // toast.dismiss();
+      toast.remove();
+
       toast.success("Job listed successfully");
       router.replace("/success");
     } catch (error: any) {
       console.error(error);
-      toast.dismiss();
+      // toast.dismiss();
+      toast.remove();
+
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
-      toast.dismiss();
+      toast.remove();
     }
   };
 
@@ -480,7 +487,9 @@ const PostForm = () => {
             </div>
           </GridForm>
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Job category</p>
+            <p className="text-xs md:text-sm">
+              Type of contractors you need for your project
+            </p>
             <FilterSkills
               selectedSkill={selectedSkills as any}
               setSelectedSkill={setSelectedSkills as any}
@@ -488,7 +497,7 @@ const PostForm = () => {
           </div>
 
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Job description</p>
+            <p className="text-xs md:text-sm">Tell us what you need fixed</p>
             <textarea
               placeholder="Enter a detailed description of your job"
               rows={5}
@@ -506,7 +515,7 @@ const PostForm = () => {
 
           <div className="grid md:grid-cols-2 gap-5 md:gap-3">
             <div className="column gap-2">
-              <p className="text-xs md:text-sm">Provide job location</p>
+              <p className="text-xs md:text-sm">Job address</p>
               <PlacesAutocomplete
                 selectedPredictions={selectedPredictions}
                 setSelectedPredictions={setSelectedPredictions}
@@ -573,7 +582,9 @@ const PostForm = () => {
           </div> */}
 
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Date</p>
+            <p className="text-xs md:text-sm">
+              When are you hoping to get this project completed by
+            </p>
             <CustomDatePicker
               selected={selected}
               setSelected={setSelected}
@@ -593,7 +604,9 @@ const PostForm = () => {
 
             <p className="text-xs md:text-sm">
               Upload images/ Videos{" "}
-              <span className="message-text">(Highly Recommended)</span>
+              <span className="message-text">
+                (Optional but Highly Recommended)
+              </span>
             </p>
             <div
               className={`bg-mygray-100 h-[200px]  flex-center relative rounded-xl  ${
@@ -678,24 +691,26 @@ const PostForm = () => {
               className="flex items-center gap-2"
               onClick={() => setIsSelected((is) => !is)}
             >
-              <button
-                className={`h-6 w-6 rounded-md ${
-                  isSelected ? "bg-mygray-100" : "bg-mygray-300"
-                } flex items-center justify-center cursor-pointer ${
-                  isSelected ? "border" : ""
-                } cursor-pointer`}
-              >
-                {isSelected ? <BiCheck /> : null}
-              </button>
               <p className={`${isSelected ? "" : "text-mygray-400"}`}>
-                I require an onsite evaluation
+                To provide accurate quote. Do we have permissions to access your
+                property?.
               </p>
             </div>
-            <p className="message-text">
+            <select
+              id=""
+              className="input"
+              {...register("site_visit", {
+                required: "Kindly select an option",
+              })}
+            >
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            {/* <p className="message-text">
               Disclaimer: Visuals may not fully capture job details, so onsite
               evaluations are recommended by accuracy. Proceed if you agree by
               clicking the box. Leave unchecked if you decline
-            </p>
+            </p> */}
           </div>
           <div className=" w-full flex items-center justify-center">
             <div className="w-64">
