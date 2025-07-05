@@ -718,7 +718,7 @@ const PostForm = () => {
                 className="btn-secondary w-full"
                 onClick={handleSubmit(submitForm)}
               >
-                Make A Quote
+                Request A Quote
               </button>
             </div>
           </div>
