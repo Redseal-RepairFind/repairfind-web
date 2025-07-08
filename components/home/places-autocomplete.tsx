@@ -165,7 +165,7 @@ const PlacesAutocomplete = ({
           }))
         }
       >
-        <p className="message-text">
+        <p className="text-lg font-normal">
           {selectedPredictions.prediction
             ? selectedPredictions.prediction.description
             : "Enter address"}
@@ -186,7 +186,7 @@ const PlacesAutocomplete = ({
               setInput(e.target.value);
               e.stopPropagation();
             }}
-            className="p-2 w-full border border-mygray-400"
+            className="p-2 w-full border border-mygray-400  text-lg font-normal"
             autoFocus
           />
           <ul>

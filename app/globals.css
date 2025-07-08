@@ -84,15 +84,19 @@
     @apply bg-white  rounded-xl w-[95%]  md:w-[80%] shadow-lg border border-[#cecece] p-4 
   }
   .white-bg-0 {
-    @apply bg-white  rounded-lg w-full shadow-sm border border-[#cecece] md:p-4 p-2
+    @apply bg-white  rounded-sm w-full   md:p-4 p-2
   }
 
   .input {
-    @apply  bg-mygray-100 p-2 w-full focus:outline-none text-base
+    @apply  bg-mygray-100 p-2 w-full focus:outline-none text-lg rounded-sm font-normal
   }
 
   .input-text {
-    @apply text-sm 
+    @apply text-lg 
+  }
+
+  .label {
+    @apply text-sm font-semibold
   }
 }
 

@@ -364,13 +364,13 @@ const PostForm = () => {
         </div> */}
 
         {/* <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm"> */}
-        <div className="white-bgp h-full column gap-5 md:gap-10 text-input text-xs md:text-sm">
+        <div className="w-full bg-white p-4 rounded-sm h-full column  gap-6 capitalize label pt-4">
           <GridForm>
             <div className="column gap-2">
               <p>First name</p>
               <input
                 placeholder="First name"
-                className="input"
+                className="input placeholder:font-normal"
                 {...register("firstName", {
                   required: "Enter your first name",
                   minLength: {
@@ -395,7 +395,7 @@ const PostForm = () => {
               <p>Last name</p>
               <input
                 placeholder="Last name"
-                className="input"
+                className="input placeholder:font-normal"
                 type="text"
                 {...register("lastName", {
                   required: "Enter your Last name",
@@ -422,7 +422,7 @@ const PostForm = () => {
               <p>Email address</p>
               <input
                 placeholder="Email address"
-                className="input "
+                className="input placeholder:font-normal"
                 type="email"
                 {...register("email", {
                   required: "Enter your email address",
@@ -469,7 +469,7 @@ const PostForm = () => {
                 <input
                   type="tel"
                   placeholder="Phone number"
-                  className="input"
+                  className="input placeholder:font-normal"
                   {...register("phone", {
                     required: "Phone number is required",
                     pattern: {
@@ -502,7 +502,7 @@ const PostForm = () => {
               placeholder="Enter a detailed description of your job"
               rows={5}
               cols={5}
-              className="input w-full p-4"
+              className="input w-full p-4 placeholder:font-normal"
               {...register("description", {
                 required: "Kindly enter a detailed job description",
               })}
@@ -530,7 +530,7 @@ const PostForm = () => {
                 placeholder="Unit number / suite"
                 rows={1}
                 cols={1}
-                className="input w-full p-4"
+                className="input w-full p-4 placeholder:font-normal"
                 {...register("unit")}
               />
 
@@ -599,7 +599,7 @@ const PostForm = () => {
               multiple
               ref={fileInputRef}
               onChange={handleFileChange}
-              className="hidden"
+              className="hidden "
             />
 
             <p className="text-xs md:text-sm">
@@ -679,7 +679,7 @@ const PostForm = () => {
                   ))}
                 </div>
               ) : (
-                <div className="column items-center gap-2">
+                <div className="column items-center gap-6">
                   <p className="message-text">Upload images/videos</p>
                   <Image src={Img} alt="Images icon" height={50} width={50} />
                 </div>
@@ -691,7 +691,7 @@ const PostForm = () => {
               className="flex items-center gap-2"
               onClick={() => setIsSelected((is) => !is)}
             >
-              <p className={`${isSelected ? "" : "text-mygray-400"}`}>
+              <p className={``}>
                 To provide accurate quote. Do we have permissions to access your
                 property?.
               </p>
@@ -731,5 +731,5 @@ const PostForm = () => {
 export default PostForm;
 
 const GridForm = ({ children }: { children: ReactNode }) => {
-  return <div className="grid grid-cols-2 gap-2">{children}</div>;
+  return <div className="grid grid-cols-2 gap-4">{children}</div>;
 };

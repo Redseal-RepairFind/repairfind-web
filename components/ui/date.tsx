@@ -18,6 +18,13 @@ export default function CustomDatePicker({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const handleSelect = (date: any) => {
+    if (setSelected) {
+      setSelected?.(date);
+      setOpen(false);
+    }
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -46,7 +53,7 @@ export default function CustomDatePicker({
         className="input flex items-center justify-between cursor-pointer"
         onClick={() => setOpen((op) => !op)}
       >
-        <p className="message-text">
+        <p className="text-lg">
           {selected ? dayjs(selected).format("YYYY-MM-DD") : placeholder}
         </p>
         <BiChevronRight size={24} />
@@ -56,7 +63,7 @@ export default function CustomDatePicker({
         <div className="border border-mygray-200 shadow-2xl rounded p-2 max-h-[400px] md:max-w-[400px] overflow-y-auto flex-center gap-4 absolute left-0 right-0 bottom-16 bg-white z-50">
           <Calendar
             selected={selected}
-            setSelected={setSelected ?? (() => {})}
+            setSelected={handleSelect}
             placeholder={placeholder}
           />
         </div>

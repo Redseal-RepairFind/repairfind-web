@@ -359,11 +359,11 @@ const PostJobForm = () => {
           <BackBtn name="Go back" />
         </div> */}
 
-        <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm">
+        <div className="bg-white md:rounded-sm w-full  md:w-[80%] h-full column gap-6 p-4 ">
           {/* <div className="white-bg h-full column gap-5 md:gap-10 text-input text-xs md:text-sm"> */}
           <GridForm>
             <div className="column gap-2">
-              <p>First name</p>
+              <p className="capitalize label">First Name</p>
               <input
                 placeholder="First name"
                 className="input"
@@ -388,7 +388,7 @@ const PostJobForm = () => {
               )}
             </div>
             <div className="column gap-2">
-              <p>Last name</p>
+              <p className="capitalize label">Last name</p>
               <input
                 placeholder="Last name"
                 className="input"
@@ -415,7 +415,7 @@ const PostJobForm = () => {
           </GridForm>
           <GridForm>
             <div className="column gap-2">
-              <p>Email address</p>
+              <p className="capitalize label">Email address</p>
               <input
                 placeholder="Email address"
                 className="input "
@@ -437,7 +437,7 @@ const PostJobForm = () => {
             </div>
 
             <div className="column gap-2">
-              <p>Phone number</p>
+              <p className="capitalize label">Phone number</p>
               <div className="flex gap-2 items-center">
                 {/* <select
                   className="py-2 bg-mygray-100  max-w-[60px]"
@@ -483,7 +483,7 @@ const PostJobForm = () => {
             </div>
           </GridForm>
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Job category</p>
+            <p className="text-xs md:text-sm capitalize label">Job category</p>
             <FilterSkills
               selectedSkill={selectedSkills as any}
               setSelectedSkill={setSelectedSkills as any}
@@ -491,7 +491,9 @@ const PostJobForm = () => {
           </div>
 
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Job description</p>
+            <p className="text-xs md:text-sm capitalize label">
+              Job description
+            </p>
             <textarea
               placeholder="Enter a detailed description of your job"
               rows={5}
@@ -507,9 +509,11 @@ const PostJobForm = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-5 md:gap-3">
+          <div className="grid md:grid-cols-2 gap-4">
             <div className="column gap-2">
-              <p className="text-xs md:text-sm">Provide job location</p>
+              <p className="text-xs md:text-sm capitalize label">
+                Provide job location
+              </p>
               <PlacesAutocomplete
                 selectedPredictions={selectedPredictions}
                 setSelectedPredictions={setSelectedPredictions}
@@ -517,7 +521,7 @@ const PostJobForm = () => {
               />
             </div>
             <div className="column gap-2">
-              <p className="text-xs md:text-sm">
+              <p className="text-xs md:text-sm capitalize label">
                 Unit number / suite (optional)
               </p>
               <textarea
@@ -534,9 +538,11 @@ const PostJobForm = () => {
             </div>
           </div>
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Voice description(optional)</p>
+            <p className="text-xs md:text-sm capitalize label">
+              Voice description(optional)
+            </p>
             {isRecording && stream ? (
-              <div className="gap-2 flex items-center">
+              <div className="gap-6 flex items-center">
                 <button
                   className=" rounded-sm bg-black"
                   onClick={stopRecording}
@@ -576,7 +582,7 @@ const PostJobForm = () => {
           </div>
 
           <div className="column gap-2">
-            <p className="text-xs md:text-sm">Date</p>
+            <p className="text-xs md:text-sm capitalize label">Date</p>
             <CustomDatePicker
               selected={selected}
               setSelected={setSelected}
@@ -594,9 +600,11 @@ const PostJobForm = () => {
               className="hidden"
             />
 
-            <p className="text-xs md:text-sm">
-              Upload images/ Videos{" "}
-              <span className="message-text">(Highly Recommended)</span>
+            <p className="text-xs md:text-sm capitalize label">
+              Upload images / Videos{" "}
+              <span className="message-text capitalize label">
+                (Highly Recommended)
+              </span>
             </p>
             <div
               className={`bg-mygray-100 h-[200px]  flex-center relative rounded-xl  ${
@@ -669,8 +677,10 @@ const PostJobForm = () => {
                   ))}
                 </div>
               ) : (
-                <div className="column items-center gap-2">
-                  <p className="message-text">Upload images/videos</p>
+                <div className="column items-center gap-6">
+                  <p className="message-text capitalize label">
+                    Upload images/videos
+                  </p>
                   <Image src={Img} alt="Images icon" height={50} width={50} />
                 </div>
               )}
@@ -678,7 +688,7 @@ const PostJobForm = () => {
           </div>
           <div className="column gap-3">
             <div
-              className="flex items-center gap-2"
+              className="flex items-center gap-6"
               onClick={() => setIsSelected((is) => !is)}
             >
               <button
@@ -718,5 +728,5 @@ const PostJobForm = () => {
 export default PostJobForm;
 
 const GridForm = ({ children }: { children: ReactNode }) => {
-  return <div className="grid grid-cols-2 gap-2">{children}</div>;
+  return <div className="grid grid-cols-2 gap-4">{children}</div>;
 };

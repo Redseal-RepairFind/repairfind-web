@@ -158,7 +158,7 @@ const FilterSkills = ({
           }))
         }
       >
-        <p className="message-text">
+        <p className="text-lg font-normal">
           {selectedSkill.skill ? selectedSkill.skill.name : "Select category"}
         </p>
 
@@ -205,7 +205,7 @@ const FilterSkills = ({
                     item?.name === selectedSkill.skill?.name
                       ? "bg-myblack-0 text-mygray-0"
                       : "bg-mygray-0"
-                  } px-4 py-2 rounded-sm text-sm cursor-pointer`}
+                  } px-4 py-2 rounded-sm text-base font-normal cursor-pointer`}
                   key={item?._id}
                   onClick={() =>
                     setSelectedSkill({ skill: item, openModal: false })
