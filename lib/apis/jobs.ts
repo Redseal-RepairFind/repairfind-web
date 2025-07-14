@@ -38,4 +38,19 @@ export const Jobs = {
       throw error;
     }
   },
+
+  getJobByReference: async (reference: string) => {
+    try {
+      const response = await client.get(`${url}/explore-jobs/${reference}`);
+
+      return response.data;
+    } catch (error: any) {
+      console.error(
+        "Axios error:",
+        error.response?.status,
+        error.response?.data
+      );
+      throw error;
+    }
+  },
 };
