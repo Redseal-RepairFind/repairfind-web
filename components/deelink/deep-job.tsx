@@ -15,34 +15,34 @@ const DeepLinkJobsClient = () => {
     const getJobByRef = async () => {
       setRedirecting(true);
       try {
-        const job = await Jobs.getJobByReference(reference);
-        const id = job?.data?._id;
+        // const job = await Jobs.getJobByReference(reference);
+        // const id = job?.data?._id;
 
-        if (id) {
-          const appUrl = `repairfindcontractorapp://job?id=${id}`;
-          const fallbackUrl = {
-            android:
-              "https://play.google.com/store/apps/details?id=com.krendus.repairfindcontractor",
-            ios: "https://apps.apple.com/us/app/repairfind-contractor-pro/id6478470629",
-          };
+        // if (id) {
+        const appUrl = `repairfindcontractorapp://job?id=${reference}`;
+        const fallbackUrl = {
+          android:
+            "https://play.google.com/store/apps/details?id=com.krendus.repairfindcontractor",
+          ios: "https://apps.apple.com/us/app/repairfind-contractor-pro/id6478470629",
+        };
 
-          const fallback = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-            ? fallbackUrl.ios
-            : fallbackUrl.android;
+        const fallback = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+          ? fallbackUrl.ios
+          : fallbackUrl.android;
 
-          const now = new Date().getTime();
+        const now = new Date().getTime();
 
-          window.location.replace(appUrl);
+        window.location.replace(appUrl);
 
-          const timeout = setTimeout(() => {
-            const elapsed = new Date().getTime() - now;
-            if (elapsed < 1500) {
-              window.location.replace(fallback);
-            }
-          }, 2000);
+        const timeout = setTimeout(() => {
+          const elapsed = new Date().getTime() - now;
+          if (elapsed < 1500) {
+            window.location.replace(fallback);
+          }
+        }, 2000);
 
-          return () => clearTimeout(timeout);
-        }
+        return () => clearTimeout(timeout);
+        // }
       } catch (error: any) {
         console.error("Error fetching job details:", error);
         toast.error(
