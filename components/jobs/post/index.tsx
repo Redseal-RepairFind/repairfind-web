@@ -318,9 +318,12 @@ const PostJobForm = () => {
             url: uploadedAudioUrl,
           },
         }),
-        ...(file.files?.length && {
-          media: file.files.map((fil) => fil.publicUrl),
-        }),
+        ...(Array.isArray(file.files) &&
+          file.files.length > 0 && {
+            media: file.files.map((fil) => ({
+              url: fil.publicUrl,
+            })),
+          }),
         date: dayjs(selected?.toISOString()).format("YYYY-MM-DD"),
         requiresSiteVisit: isSelected,
       };
@@ -329,15 +332,15 @@ const PostJobForm = () => {
       toast.loading("Submitting job...");
       await Jobs.listJob(formData);
 
-      toast.dismiss();
+      toast.remove();
       toast.success("Job listed successfully");
       router.replace("/success");
     } catch (error: any) {
       console.error(error);
-      toast.dismiss();
+      toast.remove();
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
-      toast.dismiss();
+      // toast.dismiss();
     }
   };
 
