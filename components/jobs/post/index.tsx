@@ -350,14 +350,14 @@ const PostJobForm = () => {
   return (
     <div
       className="relative w-full min-h-screen  bg-cont bg-start bg-no-repeat"
-      style={{ backgroundImage: "url('/images/bgimg.png')" }}
+      // style={{ backgroundImage: "url('/images/bgimg.png')" }}
     >
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white to-white" />
 
       {/* Your content here */}
       {/* <div className="relative z-10 column items-center justify-center gap-5 min-h-screen pb-8"> */}
-      <div className="relative z-10 column items-center justify-center gap-5 min-h-screen py-8">
+      <div className="relative z-10 column items-center justify-start gap-5 min-h-screen pb-8">
         {/* <div className="w-[90%] md:w-[80%] flex justify-start">
           <BackBtn name="Go back" />
         </div> */}
