@@ -351,7 +351,7 @@ const PostForm = () => {
   return (
     <div
       className="relative w-full min-h-screen  bg-cont bg-start bg-no-repeat"
-      style={{ backgroundImage: "url('/images/bgimg.png')" }}
+      // style={{ backgroundImage: "url('/images/bgimg.png')" }}
     >
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white to-white" />
