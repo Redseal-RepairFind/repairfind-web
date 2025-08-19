@@ -6,6 +6,9 @@
 }
 
 @theme {
+
+    --breakpoint-xs: 401px;
+
    
   --font-jost: "Jost";
 
