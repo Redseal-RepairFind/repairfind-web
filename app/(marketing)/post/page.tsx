@@ -731,5 +731,5 @@ const PostForm = () => {
 export default PostForm;
 
 const GridForm = ({ children }: { children: ReactNode }) => {
-  return <div className="grid md:grid-cols-2 gap-4">{children}</div>;
+  return <div className="grid  xs:grid-cols-2 gap-4">{children}</div>;
 };
