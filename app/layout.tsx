@@ -3,7 +3,6 @@ import "./globals.css";
 import { Jost } from "next/font/google";
 import LayoutClient from "@/components/ui/client-layout";
 import { Toaster } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const jost = Jost({
   subsets: ["latin"],

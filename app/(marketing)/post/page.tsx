@@ -56,6 +56,7 @@ const PostForm = () => {
 
   const [selected, setSelected] = useState<Date | undefined>(undefined);
   const [isSelected, setIsSelected] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [country, setCountry] = useState<CountryType>({
     name: "Canada",
     flag: "🇨🇦",
@@ -319,12 +320,15 @@ const PostForm = () => {
           },
         }),
         ...(file.files?.length && {
-          media: file.files.map((fil) => fil.publicUrl),
+          media: file.files.map((fil) => ({
+            url: fil.publicUrl,
+          })),
         }),
         date: dayjs(selected?.toISOString()).format("YYYY-MM-DD"),
         requiresSiteVisit: site_visit === "true" ? true : false,
       };
 
+      setIsLoading(true);
       // console.log(formData);
       toast.loading("Submitting job...");
       await Jobs.listJob(formData);
@@ -342,6 +346,7 @@ const PostForm = () => {
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       toast.remove();
+      setIsLoading(false);
     }
   };
 
@@ -718,7 +723,7 @@ const PostForm = () => {
                 className="btn-secondary w-full"
                 onClick={handleSubmit(submitForm)}
               >
-                Request A Quote
+                {isLoading ? "creating your quote...." : "Request A Quote"}
               </button>
             </div>
           </div>
